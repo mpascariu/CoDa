@@ -1,5 +1,7 @@
 # CoDa - Work in progress...
 -----------------------------------
+[![Build Status](https://travis-ci.org/mpascariu/CoDa.svg?branch=master)](https://travis-ci.org/mpascariu/CoDa)
+[![license](https://img.shields.io/github/license/mpascariu/CoDa.svg)]()
 
 ...
 
