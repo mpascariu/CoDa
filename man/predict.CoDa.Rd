@@ -2,20 +2,35 @@
 % Please edit documentation in R/fun_Coda.R
 \name{predict.CoDa}
 \alias{predict.CoDa}
-\title{Function to predict life expectancy using CoDa model}
+\title{Predict empirical distribution of deaths using CoDa model}
 \usage{
-\method{predict}{CoDa}(object, n, ...)
+\method{predict}{CoDa}(object, n, order = c(0, 1, 0), include.drift = TRUE,
+  method = "ML", ci = c(80, 95), ...)
 }
 \arguments{
 \item{object}{CoDa object}
 
 \item{n}{Number of years to be forcast in the future}
 
-\item{...}{...}
+\item{order}{A specification of the non-seasonal part of the ARIMA model: 
+the three components (p, d, q) are the AR order, the degree of differencing, 
+and the MA order.}
+
+\item{include.drift}{Logical. Should the ARIMA model include a linear drift term?
+Default: \code{TRUE}.}
+
+\item{method}{Fitting method: maximum likelihood or minimize conditional 
+sum-of-squares. Options to use:
+conditional-sum-of-squares (\code{"CSS-ML"}), maximum likelihood (\code{"ML"}) 
+and \code{"CSS"}.}
+
+\item{ci}{Confidence level for prediction intervals.}
+
+\item{...}{Additional arguments to be passed to \code{\link{Arima}}}
 }
 \value{
 Results
 }
 \description{
-Function to predict life expectancy using CoDa model
+Predict empirical distribution of deaths using CoDa model
 }

@@ -61,73 +61,83 @@ CoDa <- function(dx, x = NULL, t = NULL){
 
 
 
-#' Function to predict life expectancy using CoDa model
+#' Predict empirical distribution of deaths using CoDa model
 #' 
 #' @param object CoDa object
 #' @param n Number of years to be forcast in the future
-#' @param ... ...
+#' @param order A specification of the non-seasonal part of the ARIMA model: 
+#'  the three components (p, d, q) are the AR order, the degree of differencing, 
+#'  and the MA order.
+#' @param include.drift Logical. Should the ARIMA model include a linear drift term?
+#'  Default: \code{TRUE}.
+#' @param method Fitting method: maximum likelihood or minimize conditional 
+#'  sum-of-squares. Options to use:
+#'  conditional-sum-of-squares (\code{"CSS-ML"}), maximum likelihood (\code{"ML"}) 
+#'  and \code{"CSS"}.
+#' @param ci Confidence level for prediction intervals.
+#' @param ... Additional arguments to be passed to \code{\link{Arima}}
 #' @return Results
 #' @importFrom forecast forecast Arima
 #' @export
 #' 
-predict.CoDa <- function(object, n, ...){
-  with(object, 
-       {
-         dx_input <- t(input$dx)
-         ax <- coefficients$ax
-         bx <- coefficients$bx
-         kt <- coefficients$kt
-         nrow.dx <- nrow(dx_input)
-         close.dx <- acomp(dx_input)
-         
-         # forecast kt
-         order = c(0,1,0)
-         test <- Arima(kt, order = order, include.drift = TRUE, method = "ML")
-         fcst <- forecast(test, h = n)
-         kt.fit <- fcst$fitted
-         kt.for <- fcst$mean
-         #kt.b <- replicate(5000, simulate(test, nsim=t, bootstrap=T), simplify = "array")
-         #kt.for <- apply(kt.b, 1, function (kt.b) quantile(kt.b, prob=0.5, type=8))
-         
-         #projections
-         clr.proj.fit <- matrix(kt, ncol = 1) %*% bx
-         clr.proj.for <- matrix(c(kt, kt.for), ncol = 1) %*% bx
-         
-         #Inv clr
-         BK.proj.fit <- clrInv(clr.proj.fit)
-         BK.proj.for <- clrInv(clr.proj.for)
-         BK <- t(BK.proj.for)
-         
-         #Add geometric mean
-         proj.fit <- BK.proj.fit + ax
-         proj.for <- BK.proj.for + ax
-         
-         #jump-off
-         rows <- nrow.dx:nrow(proj.for)
-         pert <- acomp(close.dx[nrow.dx, ]) - acomp(proj.for[nrow.dx, ])
-         forecast.dx <- acomp(proj.for[rows,]) + pert
-         forefit.dx <- proj.for
-         forefit.dx[rows, ] <- forecast.dx
-         
-         #Life table
-         LT <- LifeT_dx(unclass(forefit.dx))
-         mx <- t(LT$mx)
-         qx <- t(LT$qx)
-         dx <- t(forefit.dx)
-         lx <- t(LT$lx)
-         ex <- t(LT$ex)
-         
-         bop <- min(as.numeric(rownames(dx_input)))
-         eop <- max(as.numeric(rownames(dx_input))) + n
-         d_names <- list(colnames(dx_input), bop:eop)
-         dimnames(mx) = dimnames(qx) = dimnames(dx) = dimnames(lx) = 
-           dimnames(ex) = dimnames(BK) <- d_names
-         
-         out <- list(mx = mx, qx = qx, dx = dx, lx = lx, 
-                     ex = ex, BK = BK)
-         
-         return(out)
-       })
+predict.CoDa <- function(object, n, order = c(0,1,0),
+                         include.drift = TRUE,
+                         method = "ML", ci = c(80, 95), ...){
+  dx_input <- t(object$input$dx)
+  bop <- max(as.numeric(rownames(dx_input))) + 1
+  eop <- bop + n - 1
+  fc_years = bop:eop
+  
+  ax = object$coefficients$ax
+  bx = object$coefficients$bx
+  kt = object$coefficients$kt
+  
+  # forecast kt
+  ts_model_fit <- Arima(y = kt, order = order, 
+                        include.drift = include.drift, 
+                        method = method)
+  tsf <- forecast(ts_model_fit, h = n, level = ci)  # tsf = time series forecast
+  
+  kt_forecast <- data.frame(tsf$mean, tsf$lower, tsf$upper)
+  c_names <- c('mean', paste0('L', ci), paste0('U', ci))
+  colnames(kt_forecast) <- c_names
+  
+  #projections
+  clr.proj.fit <- matrix(kt, ncol = 1) %*% bx
+  fitted_dx    <- acomp(ax + clrInv(clr.proj.fit))
+  forecast_dx  <- compute_dx(input = dx_input, 
+                             kt = kt_forecast, ax, bx,
+                             fit = fitted_dx,
+                             years = fc_years)
+  names(forecast_dx) <- c_names
+  
+  out <- structure(class = 'predict.CoDa', 
+                   list(predicted.values = forecast_dx, 
+                        kt = kt, ts_model = ts_model_fit))
+  return(out)
 }
 
+#' @keywords internal
+#' 
+compute_dx <- function(input, kt, ax, bx, fit, years) {
+  
+  if (class(kt) == 'data.frame') {
+    pred <- list()
+    for (i in 1:ncol(kt)) {
+      pred[[i]] <- compute_dx(input, kt = kt[, i], ax, bx, fit, years)
+      colnames(pred[[i]]) <- years
+    }
+    return(pred)
+  } else {
+    
+    dx_nrow  = nrow(input)
+    close.dx = acomp(input)
+    jump_off = acomp(close.dx[dx_nrow, ]) - fit[dx_nrow, ]
+    clr_proj = matrix(kt, ncol = 1) %*% bx
+    dx_      = acomp(ax + clrInv(clr_proj)) + jump_off
+    colnames(dx_) = colnames(input)
+    out      = t(dx_)
+    return(out)
+  }
+}
 

@@ -11,6 +11,26 @@ summary(fit_CoDa)
 
 # Predict life expectancy 20 years in the future using CoDa model
 pred <- predict(fit_CoDa, n = 20)
-ls(pred)
+
+pred
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

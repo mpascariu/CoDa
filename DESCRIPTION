@@ -1,10 +1,10 @@
 Package: CoDa
 Type: Package
 Title: CoDa
-Version: 0.0.2
+Version: 0.0.3
 Author: Marius Pascariu
 Maintainer: Marius Pascariu <mpascariu@outlook.com>
-Description: Mortality forecasting using CoDa.
+Description: Forecast mortality using the methods of Compositional Data Analysis.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.2)
