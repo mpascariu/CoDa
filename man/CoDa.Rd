@@ -22,12 +22,8 @@ Function to fit death rates using the CoDa model
 \examples{
 library(CoDa)
 
-# Load test data
-Dxf <- hmdus$female_Dx
-dxf <- apply(Dxf, 2, function(x) x/sum(x))
-
 # Fit CoDa model
-fit_CoDa <- CoDa(dxf, x = 0:110, t = 1960:2014)
+fit_CoDa <- CoDa(edd, x = 0:110, t = 1960:2014)
 ls(fit_CoDa)
 summary(fit_CoDa)
 
@@ -36,8 +32,5 @@ pred_Coda <- predict(fit_CoDa, n = 20)
 
 }
 \seealso{
-\code{\link{predict.CoDa}} \code{\link{summary.CoDa}}
-}
-\author{
-Marie-Pier Bergeron Boucher; Jim Oeppen
+\code{\link{predict.CoDa}}
 }

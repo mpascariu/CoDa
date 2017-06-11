@@ -19,6 +19,3 @@ Results
 \description{
 Function to predict life expectancy using CoDa model
 }
-\author{
-Marie-Pier Bergeron Boucher; Marius Pascariu
-}

@@ -4,16 +4,12 @@
 #' @param x Vector of input ages (optional) 
 #' @param t Vector of input years (optional)
 #' @return An object of class \code{CoDa}
-#' @seealso \code{\link{predict.CoDa}} \code{\link{summary.CoDa}}
+#' @seealso \code{\link{predict.CoDa}}
 #' @examples
 #' library(CoDa)
 #' 
-#' # Load test data
-#' Dxf <- hmdus$female_Dx
-#' dxf <- apply(Dxf, 2, function(x) x/sum(x))
-#' 
 #' # Fit CoDa model
-#' fit_CoDa <- CoDa(dxf, x = 0:110, t = 1960:2014)
+#' fit_CoDa <- CoDa(edd, x = 0:110, t = 1960:2014)
 #' ls(fit_CoDa)
 #' summary(fit_CoDa)
 #' 
@@ -21,7 +17,6 @@
 #' pred_Coda <- predict(fit_CoDa, n = 20)
 #' 
 #' @importFrom compositions acomp geometricmeanCol clr clrInv
-#' @author Marie-Pier Bergeron Boucher; Jim Oeppen
 #' @export
 #' 
 CoDa <- function(dx, x = NULL, t = NULL){
@@ -44,10 +39,9 @@ CoDa <- function(dx, x = NULL, t = NULL){
   bx  <- V[, 1]
   kt  <- S[1, 1] * U[, 1]
   variability <- cumsum((par$d)^2/sum((par$d)^2))
-  
-  if (!is.null(x)) { names(bx) = names(ax) <- x }
-  if (!is.null(t)) { names(kt) <- t }
-  coef <- list(ax = ax, bx = bx, kt = kt)
+  coef <- list(ax = as.numeric(ax), 
+               bx = as.numeric(bx), 
+               kt = as.numeric(kt))
   
   #projections
   clr.proj.fit <- matrix(kt, ncol = 1) %*% bx
@@ -62,9 +56,6 @@ CoDa <- function(dx, x = NULL, t = NULL){
                    list(fitted = fit, coefficients = coef, 
                         residuals = resid, input = input, 
                         call = match.call()))
-  
-  cat('Fit Compositional Data Model, CoDa (Oeppen 2008)\nCall:\n ')
-  print(out$call)
   return(out)
 }
 
@@ -77,7 +68,6 @@ CoDa <- function(dx, x = NULL, t = NULL){
 #' @param ... ...
 #' @return Results
 #' @importFrom forecast forecast Arima
-#' @author Marie-Pier Bergeron Boucher; Marius Pascariu
 #' @export
 #' 
 predict.CoDa <- function(object, n, ...){
@@ -140,24 +130,4 @@ predict.CoDa <- function(object, n, ...){
        })
 }
 
-#' Summary function for a CoDa object
-#' 
-#' @param object An object of class CoDa
-#' @param ... ...
-#' @return Summary
-#' @keywords internal
-#' @export
-#' 
-summary.CoDa <- function(object, ...){
-  cat('\nCoDa Model (2008): clr[d(x)] = a(x) + b(x)k(t) + error\n')
-  with(object,{
-    cat("\nCall:\n")
-    print(call)
-    cat("\nCoefficients:\n")
-    axbx <- data.frame(ax = coefficients$ax, bx = coefficients$bx)
-    kt <- data.frame(kt = coefficients$kt)
-    print(head_tail(axbx, digits = 5))
-    cat('\n')
-    print(t(head_tail(kt, digits = 3)))
-  })
-}
+

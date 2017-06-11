@@ -1,7 +1,7 @@
 Package: CoDa
 Type: Package
 Title: CoDa
-Version: 0.0.1
+Version: 0.0.2
 Author: Marius Pascariu
 Maintainer: Marius Pascariu <mpascariu@outlook.com>
 Description: Mortality forecasting using CoDa.
@@ -14,4 +14,7 @@ Imports:
       MASS,
       crch
 Suggests:
+    knitr,
+    rmarkdown
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

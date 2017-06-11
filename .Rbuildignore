@@ -1,4 +1,5 @@
 ^data-raw$
+^checks$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE

@@ -1,65 +1,43 @@
-#' Life Table starting from dx
+
 #' @keywords internal
+#' @export
 #' 
-LifeT_dx <- function(dx, radix = 1e+05){
-     n  <- 1
-     a  <- c(0.06, rep(0.5, ncol(dx) - 1)) 
-     dx <- dx*radix
-     qx = lx = Lx = Tx <- matrix(NA, nrow(dx), ncol(dx))
-
-     for (j in 1:nrow(dx)) {
-          lx[j, 2:ncol(dx)] <- radix - cumsum(dx[j, 1:(ncol(dx) - 1)])
-          Lx[j, ] <- (lx[j, ]*n) - (dx[j, ]*(n - a))
-          
-          for (i in 1:ncol(dx)) {
-               Tx[j, i] <- sum(Lx[j, i:ncol(Lx)], na.rm = TRUE)
-          }
-          Tx[Tx == 0] <- NA
-     }
-     mx <- dx/Lx
-     
-     for (j in 1:nrow(mx)) {
-       qx[j, ] <- mx[j, ] * n / (1 + (n - a) * mx[j, ])
-       qx[, ncol(qx)] <- 1
-       qx[qx > 1] <- 1
-       }
-     ex <- Tx/lx
-
-     dimnames(qx) = dimnames(lx) = dimnames(Lx) = 
-       dimnames(ex) = dimnames(mx) <- dimnames(dx)
-     return(list(mx = mx, qx = qx, dx = dx, lx = lx, 
-                 Lx = Lx, Tx = Tx, ex = ex))
+print.CoDa <- function(x, ...) {
+  cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
+  cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]')
+  cat('\nCall: '); print(x$call)
+  cat('\nYears in fit: ', paste(range(x$input$t), collapse = ' - '))
+  cat('\nAges in fit: ', paste(range(x$input$x), collapse = ' - '))
 }
 
-#' Life Table starting from mx 
 #' @keywords internal
+#' @export
 #' 
-LifeT_mx <- function(mx, radix = 1e+05){
-     n  <- 1
-     a  <- c(0.06, rep(0.5, ncol(mx) - 1))
-     qx = lx = Lx = Tx <- matrix(NA, nrow(mx), ncol(mx))
-     
-     for (j in 1:nrow(mx)) {
-          qx[j, ] <- mx[j, ] * n / (1 + (n - a) * mx[j, ])
-          qx[, ncol(qx)] <- 1
-          qx[qx > 1] <- 1
-          px <- 1 - qx
-          lx[j, ] <- radix * c(1, cumprod(px[j, ])[1:(length(lx[j, ]) - 1)])
-          dx <- lx*qx
-          Lx[j, ] <- (lx[j, ]*n) - (dx[j, ]*(n - a))
-          
-          for (i in 1:ncol(mx)) {
-               Tx[j, i] <- sum(Lx[j, i:ncol(Lx)], na.rm = TRUE)
-          }
-          Tx[Tx == 0] <- NA
-     }
-     ex <- Tx/lx
-     dimnames(qx) = dimnames(dx) = dimnames(lx) = dimnames(Lx) = 
-          dimnames(Tx) = dimnames(ex) <- dimnames(mx)
-     return(list(mx = mx, qx = qx, dx = dx, lx = lx, 
-                 Lx = Lx, Tx = Tx, ex = ex))
+summary.CoDa <- function(object, ...) {
+    axbx <- data.frame(ax = object$coefficients$ax, 
+                       bx = object$coefficients$bx,
+                       row.names = object$input$x)
+    kt <- data.frame(kt = object$coefficients$kt)
+    out = structure(class = 'summary.CoDa', 
+                    list(A = axbx, K = kt, call = object$call,
+                         t = object$input$t, x_ = object$input$x))
+    return(out)
 }
 
+
+#' @keywords internal
+#' @export
+#' 
+print.summary.CoDa <- function(x, ...){
+  cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
+  cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]\n')
+  
+  cat('\nCoefficients:\n')
+  A <- head_tail(x$A, digits = 5, hlength = 6, tlength = 6)
+  K <- head_tail(data.frame(. = '|', t = as.integer(x$t), kt = x$K),
+                  digits = 5, hlength = 6, tlength = 6)
+  print(data.frame(A, K))
+}
 
 
 
