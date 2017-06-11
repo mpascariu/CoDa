@@ -4,7 +4,7 @@
 \alias{predict.CoDa}
 \title{Predict empirical distribution of deaths using CoDa model}
 \usage{
-\method{predict}{CoDa}(object, n, order = c(0, 1, 0), include.drift = TRUE,
+\method{predict}{CoDa}(object, n, order = NULL, include.drift = NULL,
   method = "ML", ci = c(80, 95), ...)
 }
 \arguments{
@@ -14,10 +14,11 @@
 
 \item{order}{A specification of the non-seasonal part of the ARIMA model: 
 the three components (p, d, q) are the AR order, the degree of differencing, 
-and the MA order.}
+and the MA order. If \code{order = NULL}, the arima order will be estimated 
+automatically using the KPPS algorithm.}
 
 \item{include.drift}{Logical. Should the ARIMA model include a linear drift term?
-Default: \code{TRUE}.}
+If \code{include.drift = NULL}, the model will be estimated automatically.}
 
 \item{method}{Fitting method: maximum likelihood or minimize conditional 
 sum-of-squares. Options to use:

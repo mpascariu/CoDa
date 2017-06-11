@@ -39,8 +39,16 @@ print.summary.CoDa <- function(x, ...){
   print(data.frame(A, K))
 }
 
+#' @keywords internal
+#' @export
+#' 
+print.predict.CoDa <- function(x, ...) {
+  cat('\nCompositional Data Model forecast')
+  cat('\nAges in forecast: ', paste(range(x$years), collapse = ' - '))
+  cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE), "\n")
+}
 
-
+# ----------------------------------------------
 
 #' Summary function - display head and tail in a single data.frame
 #' The code for this function was first written for 'psych' R package
@@ -85,4 +93,31 @@ head_tail <- function(x, hlength = 4, tlength = 4,
     }
   }
   return(head.tail)
+}
+
+#' @keywords internal
+#' 
+arima.string1 <- function(object, padding = FALSE) {
+  order <- object$arma[c(1, 6, 2, 3, 7, 4, 5)]
+  result <- paste("ARIMA(", order[1], ",", order[2], ",", order[3], 
+                  ")", sep = "")
+  if (order[7] > 1 & sum(order[4:6]) > 0) 
+    result <- paste(result, "(", order[4], ",", order[5], 
+                    ",", order[6], ")[", order[7], "]", sep = "")
+  if (!is.null(object$xreg)) {
+    if (NCOL(object$xreg) == 1 & is.element("drift", names(object$coef))) 
+      result <- paste(result, "with drift        ")
+    else result <- paste("Regression with", result, "errors")
+  }
+  else {
+    if (is.element("constant", names(object$coef)) | is.element("intercept", 
+                                                                names(object$coef))) 
+      result <- paste(result, "with non-zero mean")
+    else if (order[2] == 0 & order[5] == 0) 
+      result <- paste(result, "with zero mean    ")
+    else result <- paste(result, "                  ")
+  }
+  if (!padding) 
+    result <- gsub("[ ]*$", "", result)
+  return(result)
 }
