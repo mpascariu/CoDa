@@ -1,7 +1,7 @@
 Package: CoDa
 Type: Package
 Title: CoDa
-Version: 0.0.4
+Version: 0.0.5
 Author: Marius Pascariu
 Maintainer: Marius Pascariu <mpascariu@outlook.com>
 Description: Forecast mortality using the methods of Compositional Data Analysis.

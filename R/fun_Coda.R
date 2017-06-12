@@ -23,17 +23,14 @@
 CoDa <- function(dx, x = NULL, t = NULL){
   input <- c(as.list(environment()))
   
-  dx_input <- t(dx)
-  f_ = 1
-  
   #data close
-  close.dx <- unclass(acomp(dx_input))*f_
+  close.dx <- unclass(acomp(t(dx)))
   #geometric mean
   ax <- geometricmeanCol(close.dx)
-  close.ax <- ax/sum(ax)*f_
+  close.ax <- ax/sum(ax)
   #centering
   dx.cent <- sweep(close.dx, 2, close.ax, "/")
-  close.dx.cent <- dx.cent/rowSums(dx.cent)*f_
+  close.dx.cent <- dx.cent/rowSums(dx.cent)
   #clr
   clr.cent <- clr(close.dx.cent)
   # SVD: bx and kt
@@ -51,14 +48,13 @@ CoDa <- function(dx, x = NULL, t = NULL){
   #projections
   clr.proj.fit <- matrix(kt, ncol = 1) %*% bx
   #Inv clr
-  BK.proj.fit <- unclass(clrInv(clr.proj.fit))*f_
+  BK.proj.fit <- unclass(clrInv(clr.proj.fit))
   #Add geometric mean
   proj.fit <- sweep(BK.proj.fit, 2, close.ax, FUN = "*")
-  fit <- t(proj.fit/rowSums(proj.fit)*f_)
-  resid <- dx*f_ - fit
+  fit <- t(proj.fit/rowSums(proj.fit))
+  resid <- dx - fit
   dimnames(fit) = dimnames(resid) = dimnames(dx)
   
-  diagnosis = as.list(environment())
   out <- structure(class = 'CoDa', 
                    list(fitted = fit, coefficients = coef,
                         residuals = resid, input = input, 
@@ -66,7 +62,7 @@ CoDa <- function(dx, x = NULL, t = NULL){
   return(out)
 }
 
-
+# jumpchoice = c("fit", "actual")
 
 #' Predict empirical distribution of deaths using CoDa model
 #' 
@@ -84,17 +80,22 @@ CoDa <- function(dx, x = NULL, t = NULL){
 #'  and \code{"CSS"}.
 #' @param ci Confidence level for prediction intervals.
 #' @param ... Additional arguments to be passed to \code{\link{Arima}}
+#' @param jumpchoice Method used for computation of jumpchoice. 
+#'  Possibilities: \code{"actual"} (use actual rates from final year) 
+#'  and \code{"fit"} (use fitted rates).
 #' @return Results
 #' @importFrom forecast forecast Arima arimaorder auto.arima
 #' @export
 #' 
 predict.CoDa <- function(object, n, order = NULL,
                          include.drift = NULL,
-                         method = "ML", ci = c(80, 95), ...){
+                         method = "ML", ci = c(80, 95), 
+                         jumpchoice = c("actual", "fit"), ...){
   dx_input <- t(object$input$dx)
-  bop <- max(as.numeric(rownames(dx_input))) + 1
-  eop <- bop + n - 1
-  fc_years = bop:eop
+  bop      <- max(as.numeric(rownames(dx_input))) + 1
+  eop      <- bop + n - 1
+  fc_years <- bop:eop
+  jump_choice <- jumpchoice[1]
   
   ax = object$coefficients$ax
   bx = object$coefficients$bx
@@ -114,13 +115,11 @@ predict.CoDa <- function(object, n, order = NULL,
   c_names <- c('mean', paste0('L', ci), paste0('U', ci))
   colnames(forecast_kt) <- c_names
   
-  #projections
-  clr.proj.fit <- matrix(kt, ncol = 1) %*% bx
-  fitted_dx    <- acomp(ax + clrInv(clr.proj.fit))
   forecast_dx  <- compute_dx(input = dx_input, 
                              kt = forecast_kt, ax, bx,
-                             fit = fitted_dx,
-                             years = fc_years)
+                             fit = t(object$fitted),
+                             years = fc_years,
+                             jumpchoice = jump_choice)
   names(forecast_dx) <- c_names
   
   out <- structure(class = 'predict.CoDa', 
@@ -131,25 +130,27 @@ predict.CoDa <- function(object, n, order = NULL,
 
 #' @keywords internal
 #' 
-compute_dx <- function(input, kt, ax, bx, fit, years) {
+compute_dx <- function(input, kt, ax, bx, fit, years, jumpchoice) {
   
   if (class(kt) == 'data.frame') {
     pred <- list()
     for (i in 1:ncol(kt)) {
-      pred[[i]] <- compute_dx(input, kt = kt[, i], ax, bx, fit, years)
+      pred[[i]] <- compute_dx(input, kt = kt[, i], ax, bx, 
+                              fit, years, jumpchoice)
       colnames(pred[[i]]) <- years
     }
     return(pred)
-  } else {
     
+  } else {
     dx_nrow  = nrow(input)
     close.dx = acomp(input)
     jump_off = acomp(close.dx[dx_nrow, ]) - fit[dx_nrow, ]
     clr_proj = matrix(kt, ncol = 1) %*% bx
-    dx_      = acomp(ax + clrInv(clr_proj)) + jump_off
+    if (jumpchoice == 'fit')    dx_ = acomp(ax + clrInv(clr_proj))
+    if (jumpchoice == 'actual') dx_ = acomp(ax + clrInv(clr_proj)) + jump_off
     colnames(dx_) = colnames(input)
-    out      = t(dx_)
+    out      = unclass(t(dx_))
     return(out)
   }
-}
+}  
 

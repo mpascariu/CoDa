@@ -5,7 +5,7 @@
 \title{Predict empirical distribution of deaths using CoDa model}
 \usage{
 \method{predict}{CoDa}(object, n, order = NULL, include.drift = NULL,
-  method = "ML", ci = c(80, 95), ...)
+  method = "ML", ci = c(80, 95), jumpchoice = c("actual", "fit"), ...)
 }
 \arguments{
 \item{object}{CoDa object}
@@ -26,6 +26,10 @@ conditional-sum-of-squares (\code{"CSS-ML"}), maximum likelihood (\code{"ML"})
 and \code{"CSS"}.}
 
 \item{ci}{Confidence level for prediction intervals.}
+
+\item{jumpchoice}{Method used for computation of jumpchoice. 
+Possibilities: \code{"actual"} (use actual rates from final year) 
+and \code{"fit"} (use fitted rates).}
 
 \item{...}{Additional arguments to be passed to \code{\link{Arima}}}
 }
