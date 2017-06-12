@@ -144,13 +144,15 @@ compute_dx <- function(input, kt, ax, bx, fit, years, jumpchoice) {
   } else {
     dx_nrow  = nrow(input)
     close.dx = acomp(input)
-    jump_off = acomp(close.dx[dx_nrow, ]) - fit[dx_nrow, ]
+    jump_off = as.numeric(close.dx[dx_nrow, ]/fit[dx_nrow, ])
     clr_proj = matrix(kt, ncol = 1) %*% bx
-    if (jumpchoice == 'fit')    dx_ = acomp(ax + clrInv(clr_proj))
-    if (jumpchoice == 'actual') dx_ = acomp(ax + clrInv(clr_proj)) + jump_off
-    colnames(dx_) = colnames(input)
-    out      = unclass(t(dx_))
-    return(out)
+    
+    bk_ <- unclass(clrInv(clr_proj))
+    dx_ <- sweep(bk_, 2, ax, FUN = "*")
+    if (jumpchoice == 'actual') dx_ <- sweep(dx_, 2, jump_off, FUN = "*")
+    dx_ <- t(dx_/rowSums(dx_))
+    rownames(dx_) <- colnames(input)
+    return(dx_)
   }
-}  
+} 
 
