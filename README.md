@@ -1,5 +1,6 @@
 # CoDa (beta version)
 [![Build Status](https://travis-ci.org/mpascariu/CoDa.svg?branch=master)](https://travis-ci.org/mpascariu/CoDa)
+[![Coverage Status](https://img.shields.io/codecov/c/github/mpascariu/CoDa/master.svg)](https://codecov.io/github/mpascariu/CoDa?branch=master)
 [![license](https://img.shields.io/github/license/mpascariu/CoDa.svg)]()
 
 This repository contains the source code for the CoDa model for forecasting mortality.
