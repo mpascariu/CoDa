@@ -1,10 +1,25 @@
-#' Function to fit death rates using the CoDa model
+
+#' Fit CoDa model
 #' 
-#' @param dx female death rates matrix with ages as row and time as column
+#' Fit Compositional Data Analysis (CoDa) model for forecasting the life table 
+#' distribution of deaths.
+#' 
+#' @param dx Female death rates matrix with ages as row and time as column
 #' @param x Vector of input ages (optional) 
 #' @param y Vector of input years (optional)
 #' @return An object of class \code{CoDa}
 #' @seealso \code{\link{predict.CoDa}}
+#' @references 
+#' \enumerate{
+#' \item{Bergeron-Boucher, M-P., Canudas-Romo, V., Oeppen, J. and Vaupel, W.J. 2017. 
+#' \href{http://doi.org/10.4054/DemRes.2017.37.17}{
+#' Coherent forecasts of mortality with compositional data analysis.}
+#' Demographic Research, Volume 17, Article 17, Pages 527--566.}
+#' \item{Aitchison, J. 1986. 
+#' \href{http://www.leg.ufpr.br/lib/exe/fetch.php/pessoais:abtmartins:a_concise_guide_to_compositional_data_analysis.pdf}{
+#' The Statistical Analysis of Compositional Data.} 
+#' London: Chapman and Hall. 2015.}
+#' }
 #' @examples
 #' # Fit CoDa model
 #' fit_CoDa <- CoDa(CoDa.data, x = 0:110, y = 1960:2014)
@@ -49,7 +64,6 @@ CoDa <- function(dx, x = NULL, y = NULL){
   return(out)
 }
 
-# jumpchoice = c("fit", "actual")
 
 #' Predict empirical distribution of deaths using CoDa model
 #' 

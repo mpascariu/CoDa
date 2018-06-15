@@ -1,8 +1,11 @@
 Package: CoDa
 Type: Package
-Title: CoDa
-Version: 0.0.6
-Author: Marius Pascariu
+Title: CoDa - Compositional Data Forecasting Method
+Version: 0.0.7
+Authors@R: c(
+  person("Marius D.", "Pascariu", role = c("aut", "cre"), 
+         email = "rpascariu@outlook.com"),
+  person("Marie-Pier", "Bergeron-Boucher", role = "ctb"))
 Maintainer: Marius Pascariu <rpascariu@outlook.com>
 Description: Forecast mortality using the methods of Compositional Data Analysis.
 License: GPL-3
@@ -15,5 +18,7 @@ Suggests:
   knitr,
   rmarkdown,
   covr
+URL: https://github.com/mpascariu/CoDa
+BugReports: https://github.com/mpascariu/CoDa/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

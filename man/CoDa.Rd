@@ -2,12 +2,12 @@
 % Please edit documentation in R/fun_Coda.R
 \name{CoDa}
 \alias{CoDa}
-\title{Function to fit death rates using the CoDa model}
+\title{Fit CoDa model}
 \usage{
 CoDa(dx, x = NULL, y = NULL)
 }
 \arguments{
-\item{dx}{female death rates matrix with ages as row and time as column}
+\item{dx}{Female death rates matrix with ages as row and time as column}
 
 \item{x}{Vector of input ages (optional)}
 
@@ -17,7 +17,8 @@ CoDa(dx, x = NULL, y = NULL)
 An object of class \code{CoDa}
 }
 \description{
-Function to fit death rates using the CoDa model
+Fit Compositional Data Analysis (CoDa) model for forecasting the life table 
+distribution of deaths.
 }
 \examples{
 # Fit CoDa model
@@ -29,6 +30,18 @@ summary(fit_CoDa)
 pred_Coda <- predict(fit_CoDa, n = 20)
 pred_Coda
 
+}
+\references{
+\enumerate{
+\item{Bergeron-Boucher, M-P., Canudas-Romo, V., Oeppen, J. and Vaupel, W.J. 2017. 
+\href{http://doi.org/10.4054/DemRes.2017.37.17}{
+Coherent forecasts of mortality with compositional data analysis.}
+Demographic Research, Volume 17, Article 17, Pages 527--566.}
+\item{Aitchison, J. 1986. 
+\href{http://www.leg.ufpr.br/lib/exe/fetch.php/pessoais:abtmartins:a_concise_guide_to_compositional_data_analysis.pdf}{
+The Statistical Analysis of Compositional Data.} 
+London: Chapman and Hall. 2015.}
+}
 }
 \seealso{
 \code{\link{predict.CoDa}}
