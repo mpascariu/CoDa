@@ -1,7 +1,11 @@
-^data-raw$
-^checks$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^LICENSE
+^data-raw$
+^checks$
+^LICENSE$
+^.git$
 ^\.travis\.yml$
+^CODE_OF_CONDUCT.md$
+^CONTRIBUTING.md$
+^appveyor\.yml$
 ^codecov\.yml$

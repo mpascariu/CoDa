@@ -4,14 +4,14 @@
 \alias{CoDa}
 \title{Function to fit death rates using the CoDa model}
 \usage{
-CoDa(dx, x = NULL, t = NULL)
+CoDa(dx, x = NULL, y = NULL)
 }
 \arguments{
 \item{dx}{female death rates matrix with ages as row and time as column}
 
 \item{x}{Vector of input ages (optional)}
 
-\item{t}{Vector of input years (optional)}
+\item{y}{Vector of input years (optional)}
 }
 \value{
 An object of class \code{CoDa}
@@ -20,10 +20,8 @@ An object of class \code{CoDa}
 Function to fit death rates using the CoDa model
 }
 \examples{
-library(CoDa)
-
 # Fit CoDa model
-fit_CoDa <- CoDa(edd, x = 0:110, t = 1960:2014)
+fit_CoDa <- CoDa(CoDa.data, x = 0:110, y = 1960:2014)
 ls(fit_CoDa)
 summary(fit_CoDa)
 

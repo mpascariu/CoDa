@@ -1,8 +1,8 @@
 # CoDa (beta version)
-[![Build Status](https://travis-ci.org/mpascariu/CoDa.svg?branch=master)](https://travis-ci.org/mpascariu/CoDa)
-[![Coverage Status](https://img.shields.io/codecov/c/github/mpascariu/CoDa/master.svg)](https://codecov.io/github/mpascariu/CoDa?branch=master)
-[![license](https://img.shields.io/github/license/mpascariu/CoDa.svg)]()
-
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/mpascariu/CoDa?branch=master&svg=true)](https://ci.appveyor.com/project/mpascariu/CoDa)
+[![Linux Build Status](https://travis-ci.org/mpascariu/CoDa.svg?branch=master)](https://travis-ci.org/mpascariu/CoDa)
+[![codecov](https://codecov.io/github/mpascariu/CoDa/branch/master/graphs/badge.svg)](https://codecov.io/github/mpascariu/CoDa)
+[![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/mpascariu/CoDa/blob/master/LICENSE)
 This repository contains the source code for the CoDa model for forecasting mortality.
 
 Installation

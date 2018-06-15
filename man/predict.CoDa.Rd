@@ -10,11 +10,11 @@
 \arguments{
 \item{object}{CoDa object}
 
-\item{n}{Number of years to be forcast in the future}
+\item{n}{Number of years to be forecast in the future}
 
 \item{order}{A specification of the non-seasonal part of the ARIMA model: 
 the three components (p, d, q) are the AR order, the degree of differencing, 
-and the MA order. If \code{order = NULL}, the arima order will be estimated 
+and the MA order. If \code{order = NULL}, the ARIMA order will be estimated 
 automatically using the KPPS algorithm.}
 
 \item{include.drift}{Logical. Should the ARIMA model include a linear drift term?

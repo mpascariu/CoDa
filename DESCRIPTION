@@ -1,21 +1,19 @@
 Package: CoDa
 Type: Package
 Title: CoDa
-Version: 0.0.5
+Version: 0.0.6
 Author: Marius Pascariu
-Maintainer: Marius Pascariu <mpascariu@outlook.com>
+Maintainer: Marius Pascariu <rpascariu@outlook.com>
 Description: Forecast mortality using the methods of Compositional Data Analysis.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.2)
 Imports:
-      forecast,
-      compositions,
-      MASS,
-      crch
+  compositions,
+  forecast
 Suggests:
-    knitr,
-    rmarkdown,
-    covr
+  knitr,
+  rmarkdown,
+  covr
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

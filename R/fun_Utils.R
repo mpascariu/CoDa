@@ -6,7 +6,7 @@ print.CoDa <- function(x, ...) {
   cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
   cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]')
   cat('\nCall: '); print(x$call)
-  cat('\nYears in fit: ', paste(range(x$input$t), collapse = ' - '))
+  cat('\nYears in fit: ', paste(range(x$input$y), collapse = ' - '))
   cat('\nAges in fit: ', paste(range(x$input$x), collapse = ' - '))
 }
 
@@ -20,7 +20,7 @@ summary.CoDa <- function(object, ...) {
     kt <- data.frame(kt = object$coefficients$kt)
     out = structure(class = 'summary.CoDa', 
                     list(A = axbx, K = kt, call = object$call,
-                         t = object$input$t, x_ = object$input$x))
+                         y = object$input$y, x_ = object$input$x))
     return(out)
 }
 
@@ -34,7 +34,7 @@ print.summary.CoDa <- function(x, ...){
   
   cat('\nCoefficients:\n')
   A <- head_tail(x$A, digits = 5, hlength = 6, tlength = 6)
-  K <- head_tail(data.frame(. = '|', t = as.integer(x$t), kt = x$K),
+  K <- head_tail(data.frame(. = '|', y = as.integer(x$y), kt = x$K),
                   digits = 5, hlength = 6, tlength = 6)
   print(data.frame(A, K))
 }
@@ -51,8 +51,6 @@ print.predict.CoDa <- function(x, ...) {
 # ----------------------------------------------
 
 #' Summary function - display head and tail in a single data.frame
-#' The code for this function was first written for 'psych' R package
-#' @importFrom utils head tail
 #' @author William Revelle (\email{revelle@@northwestern.edu})
 #' @keywords internal
 #' 

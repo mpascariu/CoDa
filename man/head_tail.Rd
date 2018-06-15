@@ -2,14 +2,12 @@
 % Please edit documentation in R/fun_Utils.R
 \name{head_tail}
 \alias{head_tail}
-\title{Summary function - display head and tail in a single data.frame
-The code for this function was first written for 'psych' R package}
+\title{Summary function - display head and tail in a single data.frame}
 \usage{
 head_tail(x, hlength = 4, tlength = 4, digits = 2, ellipsis = TRUE)
 }
 \description{
 Summary function - display head and tail in a single data.frame
-The code for this function was first written for 'psych' R package
 }
 \author{
 William Revelle (\email{revelle@northwestern.edu})
