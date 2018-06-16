@@ -57,59 +57,47 @@ print.predict.CoDa <- function(x, ...) {
 head_tail <- function(x, hlength = 4, tlength = 4, 
                       digits = 2, ellipsis = TRUE) {
   if (is.data.frame(x) | is.matrix(x)) {
-    if (is.matrix(x)) 
-      x <- data.frame(unclass(x))
+    if (is.matrix(x)) x = data.frame(unclass(x))
     nvar <- dim(x)[2]
     dots <- rep("...", nvar)
-    h <- data.frame(head(x, hlength))
-    t <- data.frame(tail(x, tlength))
+    h    <- data.frame(head(x, hlength))
+    t    <- data.frame(tail(x, tlength))
+    
     for (i in 1:nvar) {
       if (is.numeric(h[1, i])) {
         h[i] <- round(h[i], digits)
         t[i] <- round(t[i], digits)
-      }
-      else {
+      } else {
         dots[i] <- NA
       }
     }
-    if (ellipsis) {
-      head.tail <- rbind(h, ... = dots, t)
-    }
-    else {
-      head.tail <- rbind(h, t)
-    }
+    out <- if (ellipsis) rbind(h, ... = dots, t) else rbind(h, t)
   }
   else {
-    h <- head(x, hlength)
-    t <- tail(x, tlength)
-    if (ellipsis) {
-      head.tail <- rbind(h, "...       ...", t)
-    }
-    else {
-      head.tail <- rbind(h, t)
-      head.tail <- as.matrix(head.tail)
-    }
+    h   <- head(x, hlength)
+    t   <- tail(x, tlength)
+    out <- if (ellipsis) rbind(h, "...       ...", t) else as.matrix(rbind(h, t))
   }
-  return(head.tail)
+  return(out)
 }
 
 #' @keywords internal
 #' 
 arima.string1 <- function(object, padding = FALSE) {
-  order <- object$arma[c(1, 6, 2, 3, 7, 4, 5)]
-  result <- paste("ARIMA(", order[1], ",", order[2], ",", order[3], 
-                  ")", sep = "")
+  order  <- object$arma[c(1, 6, 2, 3, 7, 4, 5)]
+  nc     <- names(coef(object))
+  result <- paste0("ARIMA(", order[1], ",", order[2], ",", order[3], ")")
+  
   if (order[7] > 1 & sum(order[4:6]) > 0) 
-    result <- paste(result, "(", order[4], ",", order[5], 
-                    ",", order[6], ")[", order[7], "]", sep = "")
+    result <- paste0(result, "(", order[4], ",", order[5], 
+                    ",", order[6], ")[", order[7], "]")
   if (!is.null(object$xreg)) {
-    if (NCOL(object$xreg) == 1 & is.element("drift", names(object$coef))) 
+    if (NCOL(object$xreg) == 1 & is.element("drift", nc)) 
       result <- paste(result, "with drift        ")
     else result <- paste("Regression with", result, "errors")
   }
   else {
-    if (is.element("constant", names(object$coef)) | is.element("intercept", 
-                                                                names(object$coef))) 
+    if (is.element("constant", nc) | is.element("intercept", nc)) 
       result <- paste(result, "with non-zero mean")
     else if (order[2] == 0 & order[5] == 0) 
       result <- paste(result, "with zero mean    ")

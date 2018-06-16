@@ -1,7 +1,7 @@
 Package: CoDa
 Type: Package
 Title: CoDa - Compositional Data Forecasting Method
-Version: 0.0.7
+Version: 0.0.8
 Authors@R: c(
   person("Marius D.", "Pascariu", role = c("aut", "cre"), 
          email = "rpascariu@outlook.com"),
@@ -17,7 +17,8 @@ Imports:
 Suggests:
   knitr,
   rmarkdown,
-  covr
+  covr,
+  testthat
 URL: https://github.com/mpascariu/CoDa
 BugReports: https://github.com/mpascariu/CoDa/issues
 RoxygenNote: 6.0.1
