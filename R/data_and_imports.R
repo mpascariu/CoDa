@@ -1,7 +1,7 @@
 
 
 #' Imports
-#' @importFrom stats coef
+#' @importFrom stats coef fitted
 #' @importFrom compositions acomp geometricmeanCol clr clrInv
 #' @importFrom forecast forecast Arima arimaorder auto.arima
 #' @importFrom utils head tail

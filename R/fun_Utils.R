@@ -6,8 +6,9 @@ print.CoDa <- function(x, ...) {
   cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
   cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]')
   cat('\nCall: '); print(x$call)
-  cat('\nYears in fit: ', paste(range(x$input$y), collapse = ' - '))
-  cat('\nAges in fit: ', paste(range(x$input$x), collapse = ' - '))
+  cat('\nYears in fit: ', paste(range(x$y), collapse = ' - '))
+  cat('\nAges in fit: ', paste(range(x$x), collapse = ' - '))
+  cat('\n')
 }
 
 #' @keywords internal
@@ -16,11 +17,11 @@ print.CoDa <- function(x, ...) {
 summary.CoDa <- function(object, ...) {
     axbx <- data.frame(ax = object$coefficients$ax, 
                        bx = object$coefficients$bx,
-                       row.names = object$input$x)
+                       row.names = object$x)
     kt <- data.frame(kt = object$coefficients$kt)
     out = structure(class = 'summary.CoDa', 
                     list(A = axbx, K = kt, call = object$call,
-                         y = object$input$y, x_ = object$input$x))
+                         y = object$y, x_ = object$x))
     return(out)
 }
 
@@ -37,6 +38,7 @@ print.summary.CoDa <- function(x, ...){
   K <- head_tail(data.frame(. = '|', y = as.integer(x$y), kt = x$K),
                   digits = 5, hlength = 6, tlength = 6)
   print(data.frame(A, K))
+  cat('\n')
 }
 
 #' @keywords internal
@@ -45,7 +47,8 @@ print.summary.CoDa <- function(x, ...){
 print.predict.CoDa <- function(x, ...) {
   cat('\nCompositional Data Model forecast')
   cat('\nAges in forecast: ', paste(range(x$years), collapse = ' - '))
-  cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE), "\n")
+  cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE))
+  cat('\n')
 }
 
 # ----------------------------------------------

@@ -33,7 +33,10 @@
 #' @export
 #' 
 CoDa <- function(dx, x = NULL, y = NULL){
-  input     <- c(as.list(environment()))
+  input <- c(as.list(environment()))
+  if (is.null(x)) x <- 1:nrow(dx)
+  if (is.null(y)) y <- 1:ncol(dx)
+  
   close.dx  <- unclass(acomp(t(dx))) # data close
   ax        <- geometricmeanCol(close.dx) # geometric mean
   close.ax  <- ax/sum(ax)
@@ -58,7 +61,8 @@ CoDa <- function(dx, x = NULL, y = NULL){
   resid        <- dx - fit
   dimnames(fit) = dimnames(resid) = dimnames(dx) <- list(x, y)
   
-  out <- list(fitted = fit, coefficients = cf, residuals = resid, input = input)
+  out <- list(fitted = fit, coefficients = cf, residuals = resid, 
+              input = input, x = x, y = y)
   out <- structure(class = 'CoDa', out)
   out$call <- match.call()
   return(out)
@@ -91,15 +95,15 @@ predict.CoDa <- function(object, n, order = NULL,
                          include.drift = NULL,
                          method = "ML", ci = c(80, 95), 
                          jumpchoice = c("actual", "fit"), ...){
-  dx_input <- t(object$input$dx)
-  bop      <- max(as.numeric(rownames(dx_input))) + 1
-  eop      <- bop + n - 1
-  fc_years <- bop:eop
-  jc       <- jumpchoice[1]
-  cf       <- coef(object)
-  ax <- cf$ax
-  bx <- cf$bx
-  kt <- cf$kt
+  dx  <- t(object$input$dx)
+  bop <- max(object$y) + 1
+  eop <- bop + n - 1
+  fcy <- bop:eop
+  jc  <- jumpchoice[1]
+  cf  <- coef(object)
+  ax  <- cf$ax
+  bx  <- cf$bx
+  kt  <- cf$kt
   
   # forecast kt; ax and bx are time independent.
   ts_auto = auto.arima(kt)
@@ -109,10 +113,10 @@ predict.CoDa <- function(object, n, order = NULL,
   tsm <- Arima(y = kt, order = order, include.drift = include.drift, method = method, ...)
   tsf <- forecast(tsm, h = n, level = ci)  # time series forecast
   fkt <- data.frame(tsf$mean, tsf$lower, tsf$upper) # forecast kt
-  fdx <- compute_dx(input = dx_input, kt = fkt, ax = ax, bx = bx, # forecast dx
-                    fit = t(object$fitted), years = fc_years, jumpchoice = jc)
+  fdx <- compute_dx(input = dx, kt = fkt, ax = ax, bx = bx, # forecast dx
+                    fit = t(fitted(object)), years = fcy, jumpchoice = jc)
   colnames(fkt) = names(fdx) <- c('mean', paste0('L', ci), paste0('U', ci))
-  out <- list(predicted.values = fdx, years = fc_years, kt = fkt, ts.model = tsm)
+  out <- list(predicted.values = fdx, y = fcy, kt = fkt, ts.model = tsm)
   out <- structure(class = 'predict.CoDa', out)
   return(out)
 }
