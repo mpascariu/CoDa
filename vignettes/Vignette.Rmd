@@ -1,0 +1,104 @@
+---
+title: "CoDa R Package"
+author: "Marius Pascariu"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+  # rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Description
+
+The CoDa R package contains the implementation of the Compositional Data Mortality 
+Model (CoDa). This is a Lee-Carter (1992) type method that is used to modelling and 
+forecasting the life table distribution of deaths (dx) using Principal Component 
+Analysis. In the context of mortality forecasting the CoDa method was fist used 
+in Bergeron-Boucher et al. (2017). The package includes functions for fitting 
+the model, analysing it's goodness-of-fit and performing mortality projections.
+
+## Installation
+
+1. Make sure you have the most recent version of R
+2. Run the following code in your R console 
+
+```R
+install.packages("CoDa")
+```
+
+## Updating to the latest version of the package
+
+You can track and contribute to the development of `CoDa` on [GitHub](https://github.com/mpascariu/MortalityLaws). To install it:
+
+1. Install the release version of `devtools` from CRAN with `install.packages("devtools")`.
+
+2. Make sure you have a working development environment.
+    * **Windows**: Install [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/).
+    * **Mac**: Install `Xcode` from the Mac App Store.
+    * **Linux**: Install a compiler and various development libraries (details vary across different flavors of Linux).
+
+3. Install the development version of `CoDa`.
+
+```R
+devtools::install_github("mpascariu/CoDa")
+```
+
+## Help
+All functions are documented in the standard way, which means that 
+once you load the package using ```library(CoDa)```
+you can just type ```?coda``` to see the help file. 
+
+# Examples
+
+## Fit CoDa model
+```{r}
+rm(list = ls())
+library(CoDa)
+
+M <- coda(CoDa.data, x = 0:110, y = 1960:2014)
+M
+```
+
+## Output objects
+```{r}
+ls(M)
+```
+
+## Summary
+```{r}
+summary(M)
+```
+
+## Estimated parameters
+
+```{r}
+plot(M)
+```
+
+## Plot Residuals
+
+```{r}
+res <- resid(M)
+plot(res, type = "scatter")
+plot(res, type = "colourmap")
+plot(res, type = "signplot")
+```
+
+## Mortality projections
+
+Forecasting mortality 30 years in the future using CoDa model:
+
+```{r}
+P <- predict(M, h = 30, jumpchoice = 'actual')
+P
+
+# Predicted distribution of death
+head(P$predicted.values$mean)
+```
+
+
+
+
+

@@ -1,0 +1,138 @@
+
+#' Predict empirical distribution of deaths using CoDa model
+#' 
+#' @param object coda object
+#' @param h Number of years to be forecast in the future
+#' @param order A specification of the non-seasonal part of the ARIMA model: 
+#'  the three components (p, d, q) are the AR order, the degree of differencing, 
+#'  and the MA order. If \code{order = NULL}, the ARIMA order will be estimated 
+#'  automatically using the KPPS algorithm.
+#' @param include.drift Logical. Should the ARIMA model include a linear drift term?
+#'  If \code{include.drift = NULL}, the model will be estimated automatically.
+#' @param method Fitting method: maximum likelihood or minimize conditional 
+#'  sum-of-squares. Options to use:
+#'  conditional-sum-of-squares (\code{"CSS-ML"}), maximum likelihood (\code{"ML"}) 
+#'  and \code{"CSS"}.
+#' @param ci Confidence level for prediction intervals.
+#' @param ... Additional arguments to be passed to \code{\link{Arima}}
+#' @param jumpchoice Method used for computation of jumpchoice. 
+#'  Possibilities: \code{"actual"} (use actual rates from final year) 
+#'  and \code{"fit"} (use fitted rates).
+#' @return Results
+#' @examples 
+#' # Fit CoDa Mortality Model
+#' M <- coda(CoDa.data)
+#' 
+#' # Predict life expectancy 20 years in the future using CoDa model
+#' P <- predict(M, h = 20)
+#' P
+#' @export
+#' 
+predict.coda <- function(object, h, order = NULL,
+                         include.drift = NULL,
+                         method = "ML", ci = c(80, 95), 
+                         jumpchoice = c("actual", "fit"), ...){
+  dx  <- t(object$input$dx)
+  bop <- max(object$y) + 1
+  eop <- bop + h - 1
+  fcy <- bop:eop
+  jc  <- jumpchoice[1]
+  cf  <- coef(object)
+  kt  <- cf$kt
+  
+  # forecast kt; ax and bx are time independent.
+  ts_auto = auto.arima(kt)
+  if (is.null(order)) order = arimaorder(ts_auto)
+  if (is.null(include.drift)) include.drift = any(names(coef(ts_auto)) %in% "drift")
+  
+  tsm <- Arima(y = kt, order = order, include.drift = include.drift, method = method, ...)
+  tsf <- forecast(tsm, h = h, level = ci)  # time series forecast
+  fkt <- data.frame(tsf$mean, tsf$lower, tsf$upper) # forecast kt
+  fdx <- compute_dx(dx = dx, kt = fkt, ax = cf$ax, bx = cf$bx, # forecast dx
+                    fit = t(fitted(object)), y = fcy, jumpchoice = jc)
+  colnames(fkt) = names(fdx) <- c('mean', paste0('L', ci), paste0('U', ci))
+  out <- list(predicted.values = fdx, y = fcy, kt = fkt, ts.model = tsm)
+  out <- structure(class = 'predict.coda', out)
+  return(out)
+}
+
+#' Internal function
+#' 
+#' @inheritParams coda
+#' @inheritParams predict.coda
+#' @param kt Estimated kt vector of parameters
+#' @param ax Estimated ax vector of parameters
+#' @param bx Estimated bx vector of parameters
+#' @param fit Fitted values
+#' @keywords internal
+#' 
+compute_dx <- function(dx, kt, ax, bx, fit, y, jumpchoice) {
+  
+  if (is.data.frame(kt)) {
+    pred <- list()
+    for (i in 1:ncol(kt)) {
+      pred[[i]] <- compute_dx(dx, kt = kt[, i], ax, bx, fit, y, jumpchoice)
+      colnames(pred[[i]]) <- y
+    }
+    return(pred)
+    
+  } else {
+    dx_nrow  <- nrow(dx)
+    close.dx <- acomp(dx)
+    jump_off <- as.numeric(close.dx[dx_nrow, ]/fit[dx_nrow, ])
+    clr_proj <- matrix(kt, ncol = 1) %*% bx
+    bk_      <- unclass(clrInv(clr_proj))
+    dx_      <- sweep(bk_, 2, ax, FUN = "*")
+    if (jumpchoice == 'actual') dx_ <- sweep(dx_, 2, jump_off, FUN = "*")
+    out <- t(dx_/rowSums(dx_))
+    rownames(out) <- colnames(dx)
+    return(out)
+  }
+} 
+
+
+# S3 ----------------------------------------------
+
+
+#' Print predict.coda
+#' @param x An object of class \code{"predict.coda"}
+#' @inheritParams print.coda
+#' @keywords internal
+#' @export
+#' 
+print.predict.coda <- function(x, ...) {
+  cat('\nCompositional Data Model forecast')
+  cat('\nAges in forecast: ', paste(range(x$y), collapse = ' - '))
+  cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE))
+  cat('\n')
+}
+
+#' Identify ARIMA model - internal function
+#' @param object An object generate by Arima function
+#' @param padding Logical.
+#' @keywords internal
+#' 
+arima.string1 <- function(object, padding = FALSE) {
+  order  <- object$arma[c(1, 6, 2, 3, 7, 4, 5)]
+  nc     <- names(coef(object))
+  result <- paste0("ARIMA(", order[1], ",", order[2], ",", order[3], ")")
+  
+  if (order[7] > 1 & sum(order[4:6]) > 0) 
+    result <- paste0(result, "(", order[4], ",", order[5], 
+                     ",", order[6], ")[", order[7], "]")
+  if (!is.null(object$xreg)) {
+    if (NCOL(object$xreg) == 1 & is.element("drift", nc)) 
+      result <- paste(result, "with drift        ")
+    else result <- paste("Regression with", result, "errors")
+  }
+  else {
+    if (is.element("constant", nc) | is.element("intercept", nc)) 
+      result <- paste(result, "with non-zero mean")
+    else if (order[2] == 0 & order[5] == 0) 
+      result <- paste(result, "with zero mean    ")
+    else result <- paste(result, "                  ")
+  }
+  if (!padding) 
+    result <- gsub("[ ]*$", "", result)
+  return(result)
+}

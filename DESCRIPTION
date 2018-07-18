@@ -1,19 +1,29 @@
 Package: CoDa
 Type: Package
-Title: CoDa - Compositional Data Forecasting Method
-Version: 0.0.9
+Title: Compositional Data Mortality Model (CoDa)
+Version: 0.9.0
 Authors@R: c(
   person("Marius D.", "Pascariu", role = c("aut", "cre"), 
          email = "rpascariu@outlook.com"),
-  person("Marie-Pier", "Bergeron-Boucher", role = "ctb"))
-Maintainer: Marius Pascariu <rpascariu@outlook.com>
-Description: Forecast mortality using the methods of Compositional Data Analysis.
+  person("Marie-Pier", "Bergeron-Boucher", role = "ctb"),
+  person("Jim", "Oeppen", role = "ctb"))
+Maintainer: Marius D. Pascariu <rpascariu@outlook.com>
+Description: Implementation of the Compositional Data Mortality Model (CoDa). 
+  This is a Lee-Carter (1992) <doi:10.2307/2290201> type method that can be used 
+  to modelling and forecasting the life table distribution of deaths (dx) using 
+  Principal Component Analysis. In the context of mortality forecasting the CoDa 
+  method was fist used in Bergeron-Boucher et al. (2017) <10.4054/DemRes.2017.37.17>.
+  The package includes functions for fitting the model, analysing it's 
+  goodness-of-fit and performing mortality projections.
 License: GPL-3
 LazyData: TRUE
-Depends: R (>= 3.1.2)
+Depends: R (>= 3.3.0)
 Imports:
-  compositions,
-  forecast
+  compositions (>= 1.40-2),
+  forecast,
+  reshape2 (>= 1.4.1),
+  fields (>= 8.2), 
+  RColorBrewer
 Suggests:
   knitr,
   rmarkdown,
@@ -23,3 +33,4 @@ URL: https://github.com/mpascariu/CoDa
 BugReports: https://github.com/mpascariu/CoDa/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+
