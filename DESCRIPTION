@@ -1,7 +1,7 @@
 Package: CoDa
 Type: Package
 Title: Compositional Data Mortality Model (CoDa)
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: c(
   person("Marius D.", "Pascariu", role = c("aut", "cre"), 
          email = "rpascariu@outlook.com"),
@@ -17,13 +17,13 @@ Description: Implementation of the Compositional Data Mortality Model (CoDa).
   goodness-of-fit and performing mortality projections.
 License: GPL-3
 LazyData: TRUE
-Depends: R (>= 3.3.0)
+Depends: R (>= 3.4.0)
 Imports:
   compositions (>= 1.40-2),
-  forecast,
+  forecast (>= 8.4),
   reshape2 (>= 1.4.1),
   fields (>= 8.2), 
-  RColorBrewer
+  RColorBrewer (>= 1.1-2)
 Suggests:
   knitr,
   rmarkdown,

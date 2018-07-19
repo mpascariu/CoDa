@@ -12,59 +12,59 @@ All the credit goes to it's authors:
 and Vladimir Kaishev.
 }
 \usage{
-\method{plot}{residuals.coda}(x, type = c("scatter", "colourmap", "signplot"),
-  reslim = NULL, plotAge = TRUE, plotYear = TRUE, plotCohort = TRUE,
-  pch = 20, col = NULL, ...)
+\method{plot}{residuals.coda}(x, plotType = c("scatter", "colourmap",
+  "signplot"), reslim = NULL, plotAge = TRUE, plotYear = TRUE,
+  plotCohort = TRUE, pch = 20, col = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{residuals.coda} with the residuals of a 
 CoDa Mortality Model.}
 
-\item{type}{The type of the plot. The alternatives are 
+\item{plotType}{The type of the plot. The alternatives are 
 \code{"scatter"}(default), \code{"colourmap"}, and \code{"signplot"}.}
 
 \item{reslim}{Optional numeric vector of length 2, giving the range of the 
 residuals.}
 
 \item{plotAge}{Logical value indicating if the age scatter plot should be 
-produced. This is only used when \code{type = "scatter"}.}
+produced. This is only used when \code{plotType = "scatter"}.}
 
 \item{plotYear}{Logical value indicating if the calendar year scatter plot 
-should be produced. This is only used when \code{type = "scatter"}.}
+should be produced. This is only used when \code{plotType = "scatter"}.}
 
 \item{plotCohort}{Logical value indicating if the cohort scatter plot 
-should be produced. This is only used when \code{type = "scatter"}.}
+should be produced. This is only used when \code{plotType = "scatter"}.}
 
 \item{pch}{Optional symbol to use for the points in a scatterplot. 
-This is only used when \code{type = "scatter"}. See 
+This is only used when \code{plotType = "scatter"}. See 
 \code{\link[graphics]{plot}}.}
 
 \item{col}{Optional colours to use in plotting. If 
-\code{type = "scatter"} this is a single colour to use in the points
-in the scatter plots, while if \code{type = "colourmap"} this should
+\code{plotType = "scatter"} this is a single colour to use in the points
+in the scatter plots, while if \code{plotType = "colourmap"} this should
 be a list of colours (see help in \code{\link[fields]{image.plot}} 
-for details). This argument is ignored if \code{type = "signplot"}.}
+for details). This argument is ignored if \code{plotType = "signplot"}.}
 
 \item{...}{Other plotting parameters to be passed to the plotting 
 functions. This can be used to control the appearance of the plots.}
 }
 \description{
-Plots the deviance residuals of a CoDa Mortality Model which are 
+Plot the deviance residuals of a CoDa Mortality Model which are 
 of class \code{"residuals.coda"}. Three types of plots
 are available: scatter plot of residuals by age, period and cohort,
 colour map (heatmap) of the residuals, and a black and white signplot 
 of the residuals.
 }
 \details{
-When \code{type = "scatter"} scatter plots of the residuals against age, 
+When \code{plotType = "scatter"} scatter plots of the residuals against age, 
 calendar year and cohort (year of birth) are produced. 
 
-When \code{type = "colourmap"} a two dimensional colour map of the 
+When \code{plotType = "colourmap"} a two dimensional colour map of the 
 residuals is plotted. This is produced using function 
 \code{\link[fields]{image.plot}}. See \code{\link[fields]{image.plot}} 
 for further parameters that can be passed to this type of plots.
 
-When \code{type = "signplot"} a two dimensional black and white map of the
+When \code{plotType = "signplot"} a two dimensional black and white map of the
  residuals is plotted with dark grey representing negative residuals and 
  light grey representing positive residuals. This is produced using 
  function \code{\link[graphics]{image.default}}.
@@ -75,8 +75,8 @@ M <- coda(CoDa.data, x = 0:110, y = 1960:2014)
 
 # Plot residuals
 res <- resid(M)
-plot(res, type = "scatter")
-plot(res, type = "colourmap")
-plot(res, type = "signplot")
+plot(res, plotType = "scatter")
+plot(res, plotType = "colourmap")
+plot(res, plotType = "signplot")
 
 }

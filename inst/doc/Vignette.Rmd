@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
   # rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{CoDa R Package - Beginner's Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -50,18 +50,38 @@ All functions are documented in the standard way, which means that
 once you load the package using ```library(CoDa)```
 you can just type ```?coda``` to see the help file. 
 
+\newpage
 # Examples
+```{r}
+library(CoDa)
+```
 
 ## Fit CoDa model
-```{r}
-rm(list = ls())
-library(CoDa)
+The model can be fitted using function `coda` and using a dataset containing mortality data (dx distributions) in for of a matrix or data.frame with ages as row and time as column. `CoDa.data` is an example of such a data set.
 
-M <- coda(CoDa.data, x = 0:110, y = 1960:2014)
+```{r}
+CoDa.data[1:5, 1:5]
+```
+
+`CoDa.data` is containing distribution of deaths for US female population between 1960 and 2014. The data is provided in the package for testing purposes only. By the time you are using it, it may be outdated. Download actual demographic data free of charge from Human Mortality Database. Once a username and a password is created on the [website](http://www.mortality.org) the [MortalityLaws](https://github.com/mpascariu/MortalityLaws) R package can be used to extract data directly into your R console.
+
+```{r, message=FALSE}
+M <- coda(dx = CoDa.data, x = 0:110, y = 1960:2014)
 M
 ```
 
 ## Output objects
+
+The output is an object of class `coda` with the components:
+
+* `input` -- List with arguments provided in input. Saved for convenience;
+* `coefficients` -- Estimated coefficients;
+* `fitted` -- Fitted values of the estimated CoDa model;
+* `residuals` -- Deviance residuals;
+* `x`	-- Vector of ages used in the fitting;
+* `y`	-- Vector of years used in the fitting;
+* `call` -- The unevaluated expression of the defined coda function.
+
 ```{r}
 ls(M)
 ```
@@ -71,34 +91,59 @@ ls(M)
 summary(M)
 ```
 
-## Estimated parameters
+## How to plot fitted parameters and fitted values of a `CoDa` mortality model 
+Two types of plots are available: `"coef"` to obtain representations of the three estimated series of parameters and `"data"` for visualising the input and fitted values.
+```{r, fig.asp=0.4, fig.width=10}
+plot(M, plotType = "coef", ylab = "values")
+```
 
-```{r}
-plot(M)
+```{r, fig.width=15, fig.height=6}
+plot(M, plotType = "data")
 ```
 
 ## Plot Residuals
 
-```{r}
-res <- resid(M)
-plot(res, type = "scatter")
-plot(res, type = "colourmap")
-plot(res, type = "signplot")
+Form the resulted deviance residuals, `resid(M)`, three types of figures can be obtained. When `plotType = "scatter"` scatter plots of the residuals against age, calendar year and cohort (year of birth) are produced.
+```{r, fig.asp=0.4, fig.width=10}
+plot(resid(M), plotType = "scatter")
+```
+
+When `plotType = "colourmap"` a two dimensional colour map of the residuals is plotted. This is produced using function `image.plot`. See `image.plot` for further parameters that can be passed to this type of plots.
+```{r, fig.asp = 0.5, fig.width=10}
+plot(resid(M), plotType = "colourmap")
+```
+
+When `plotType = "signplot"` a two dimensional black and white map of the residuals is plotted with dark grey representing negative residuals and light grey representing positive residuals. This is produced using function `image.default`.
+```{r, fig.asp = 0.5, fig.width=10}
+plot(resid(M), plotType = "signplot")
 ```
 
 ## Mortality projections
 
-Forecasting mortality 30 years in the future using CoDa model:
+Mortality projections can be obtained using function `predict`. The example below shows how a 30 year 
+mortality forcast is realised using the fitted `coda` model. For the computation of the `jumpchoice` there are two alternatives: `actual` (uses actual rates from final year) and `fit` (uses fitted rates).
 
 ```{r}
 P <- predict(M, h = 30, jumpchoice = 'actual')
 P
+# list of objects in predict
+ls(P)
 
 # Predicted distribution of death
-head(P$predicted.values$mean)
+head(P$predicted.values$mean, 3)
 ```
 
 
+# References
 
+1. Bergeron-Boucher, M-P., Canudas-Romo, V., Oeppen, J. and Vaupel, W.J. 2017. [Coherent forecasts of mortality with compositional data analysis.](http://doi.org/10.4054/DemRes.2017.37.17) Demographic Research, Volume 17, Article 17, Pages 527--566.
+
+2. Oeppen, J. 2008. Coherent forecasting of multiple-decrement life tables: A test using Japanese cause of death data. Paper presented at the European Population Conference 2008, Barcelona, Spain, July 9-12, 2008.
+
+3. Aitchison, J. 1986. [The Statistical Analysis of Compositional Data.](http://www.leg.ufpr.br/lib/exe/fetch.php/pessoais:abtmartins:a_concise_guide_to_compositional_data_analysis.pdf) London: Chapman and Hall. 2015.
+
+4. Ronald D. Lee and Lawrence R. Carter. 1992. [Modeling and Forecasting U.S. Mortality](http://doi.org/10.1080/01621459.1992.10475265), Journal of the American Statistical Association, 87:419, 659--671.
+
+5. Wikipedia. [Compositional data](https://en.wikipedia.org/wiki/Compositional_data) 
 
 

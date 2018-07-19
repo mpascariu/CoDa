@@ -5,8 +5,8 @@
 #' @importFrom compositions acomp geometricmeanCol clr clrInv
 #' @importFrom forecast forecast Arima arimaorder auto.arima
 #' @importFrom utils head tail
-#' @importFrom graphics par plot abline image.default
-#' @importFrom grDevices colorRampPalette grey.colors
+#' @importFrom graphics par plot matplot abline image.default
+#' @importFrom grDevices colorRampPalette grey.colors terrain.colors
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom fields image.plot
 #' @importFrom reshape2 melt

@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_coda.R
 \name{predict.coda}
 \alias{predict.coda}
-\title{Predict empirical distribution of deaths using CoDa model}
+\title{Predict distribution of deaths using CoDa model.}
 \usage{
 \method{predict}{coda}(object, h, order = NULL, include.drift = NULL,
   method = "ML", ci = c(80, 95), jumpchoice = c("actual", "fit"), ...)
@@ -34,10 +34,23 @@ and \code{"fit"} (use fitted rates).}
 \item{...}{Additional arguments to be passed to \code{\link{Arima}}}
 }
 \value{
-Results
+The output is an object of class \code{"predict.coda"} with the components:
+
+\item{kt}{The extrapolated kt parameters.}
+
+\item{predicted.values}{A list containing the predicted values together
+with the associated prediction intervals given by the estimated \code{link{coda}} 
+model over the forecast horizon \code{h}.}
+
+\item{ts.model}{An object of class \code{ARIMA} that contains all the
+components of the fitted time series model used in \code{kt} prediction.}
+
+\item{x}{Vector of ages used in prediction.}
+
+\item{y}{Vector of years used in prediction.}
 }
 \description{
-Predict empirical distribution of deaths using CoDa model
+Predict distribution of deaths using CoDa model.
 }
 \examples{
 # Fit CoDa Mortality Model
@@ -45,5 +58,8 @@ M <- coda(CoDa.data)
 
 # Predict life expectancy 20 years in the future using CoDa model
 P <- predict(M, h = 20)
-P
+
+# One can specify manually the ARIMA order, a drift to be included or not 
+# and the jump choice of the first forecast year.
+P2 <- predict(M, h = 20, order = c(0,1,0), include.drift = TRUE, jumpchoice = "fit")
 }

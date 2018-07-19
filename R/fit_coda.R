@@ -11,7 +11,14 @@
 #' @param dx Matrix containing mortality data (dx) with ages as row and time as column.
 #' @param x Vector of input ages (optional). Used to label the output objects and plots. 
 #' @param y Vector of input years (optional). Used to label the output objects and plots. 
-#' @return An object of class \code{coda}
+#' @return The output is an object of class \code{"coda"} with the components:
+#' @return \item{input}{List with arguments provided in input. Saved for convenience.}
+#' @return \item{coefficients}{Estimated coefficients.}
+#' @return \item{fitted}{Fitted values of the estimated CoDa model.}
+#' @return \item{residuals}{Deviance residuals.} 
+#' @return \item{x}{Vector of ages used in the fitting.} 
+#' @return \item{y}{Vector of years used in the fitting.} 
+#' @return \item{call}{The unevaluated expression of the defined coda function.}
 #' @seealso \code{\link{predict.coda}}
 #' @references 
 #' \enumerate{
@@ -133,11 +140,11 @@ residuals.coda <- function(object, ...){
 #' @export
 #' 
 print.coda <- function(x, ...) {
-  cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
+  cat('\nCompositional Data Mortality Model fit - CoDa (Oeppen 2008)')
   cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]')
   cat('\nCall: '); print(x$call)
+  cat('Ages  in fit: ', paste(range(x$x), collapse = ' - '))
   cat('\nYears in fit: ', paste(range(x$y), collapse = ' - '))
-  cat('\nAges in fit: ', paste(range(x$x), collapse = ' - '))
   cat('\n')
 }
 

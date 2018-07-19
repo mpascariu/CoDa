@@ -1,5 +1,5 @@
 
-#' Predict empirical distribution of deaths using CoDa model
+#' Predict distribution of deaths using CoDa model.
 #' 
 #' @param object coda object
 #' @param h Number of years to be forecast in the future
@@ -18,14 +18,25 @@
 #' @param jumpchoice Method used for computation of jumpchoice. 
 #'  Possibilities: \code{"actual"} (use actual rates from final year) 
 #'  and \code{"fit"} (use fitted rates).
-#' @return Results
+#' @return The output is an object of class \code{"predict.coda"} with the components:
+#' @return \item{kt}{The extrapolated kt parameters.}
+#' @return \item{predicted.values}{A list containing the predicted values together
+#' with the associated prediction intervals given by the estimated \code{link{coda}} 
+#' model over the forecast horizon \code{h}.}
+#' @return \item{ts.model}{An object of class \code{ARIMA} that contains all the
+#' components of the fitted time series model used in \code{kt} prediction.} 
+#' @return \item{x}{Vector of ages used in prediction.} 
+#' @return \item{y}{Vector of years used in prediction.} 
 #' @examples 
 #' # Fit CoDa Mortality Model
 #' M <- coda(CoDa.data)
 #' 
 #' # Predict life expectancy 20 years in the future using CoDa model
 #' P <- predict(M, h = 20)
-#' P
+#' 
+#' # One can specify manually the ARIMA order, a drift to be included or not 
+#' # and the jump choice of the first forecast year.
+#' P2 <- predict(M, h = 20, order = c(0,1,0), include.drift = TRUE, jumpchoice = "fit")
 #' @export
 #' 
 predict.coda <- function(object, h, order = NULL,
@@ -45,13 +56,14 @@ predict.coda <- function(object, h, order = NULL,
   if (is.null(order)) order = arimaorder(ts_auto)
   if (is.null(include.drift)) include.drift = any(names(coef(ts_auto)) %in% "drift")
   
-  tsm <- Arima(y = kt, order = order, include.drift = include.drift, method = method, ...)
+  tsm <- Arima(y = kt, order = order, include.drift = include.drift, 
+               method = method, ...)
   tsf <- forecast(tsm, h = h, level = ci)  # time series forecast
   fkt <- data.frame(tsf$mean, tsf$lower, tsf$upper) # forecast kt
   fdx <- compute_dx(dx = dx, kt = fkt, ax = cf$ax, bx = cf$bx, # forecast dx
                     fit = t(fitted(object)), y = fcy, jumpchoice = jc)
   colnames(fkt) = names(fdx) <- c('mean', paste0('L', ci), paste0('U', ci))
-  out <- list(predicted.values = fdx, y = fcy, kt = fkt, ts.model = tsm)
+  out <- list(predicted.values = fdx, y = fcy, x = object$x ,kt = fkt, ts.model = tsm)
   out <- structure(class = 'predict.coda', out)
   return(out)
 }
@@ -101,9 +113,10 @@ compute_dx <- function(dx, kt, ax, bx, fit, y, jumpchoice) {
 #' @export
 #' 
 print.predict.coda <- function(x, ...) {
-  cat('\nCompositional Data Model forecast')
-  cat('\nAges in forecast: ', paste(range(x$y), collapse = ' - '))
+  cat('\nCompositional Data Mortality Model forecast')
   cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE))
+  cat('\nAges  in forecast: ', paste(range(x$x), collapse = ' - '))
+  cat('\nYears in forecast: ', paste(range(x$y), collapse = ' - '))
   cat('\n')
 }
 
@@ -136,3 +149,4 @@ arima.string1 <- function(object, padding = FALSE) {
     result <- gsub("[ ]*$", "", result)
   return(result)
 }
+

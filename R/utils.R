@@ -7,5 +7,5 @@
 ".onAttach" <- function(lib, pkg){
   packageStartupMessage("\nCoDa       : Compositional Data Mortality Model",
                         "\nAuthor     : Marius D. Pascariu",
-                        "\nLast Update: July 18, 2018\n")
+                        "\nLast Update: July 19, 2018\n")
 }

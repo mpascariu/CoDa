@@ -2,26 +2,58 @@
 % Please edit documentation in R/Graphics.R
 \name{plot.coda}
 \alias{plot.coda}
-\title{Plot fitted parameters from a stochastic CoDa mortality model}
+\title{Plot fitted parameters and fitted values of a CoDa mortality model}
 \usage{
-\method{plot}{coda}(x, type = "l", ...)
+\method{plot}{coda}(x, plotType = c("coef", "data"), type = "l",
+  ylim = NULL, ylab = "", ...)
 }
 \arguments{
 \item{x}{An object of class \code{"coda"} with the fitted 
 parameters of the mortality model.}
 
-\item{type}{Type of plot to be drawn. See \code{\link[graphics]{plot}}.}
+\item{plotType}{The type of the plot. The alternatives are 
+\code{"coef"}(default) and \code{"data"}.}
 
-\item{...}{Additional arguments to control graphical appearance.}
+\item{type}{1-character string giving the type of plot desired.  The
+    following values are possible, for details, see \code{\link{plot}}:
+    \code{"p"} for points, \code{"l"} for lines,
+    \code{"b"} for both points and lines,
+    \code{"c"} for empty points joined by lines,
+    \code{"o"} for overplotted points and lines,
+    \code{"s"} and \code{"S"} for stair steps and
+    \code{"h"} for histogram-like vertical lines.  Finally,
+    \code{"n"} does not produce any points or lines.}
+
+\item{ylim}{the y limits of the plot.}
+
+\item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
+
+\item{...}{other \link{graphical parameters} (see \code{\link{par}} and
+    section \sQuote{Details} below).}
 }
 \description{
-Plot fitted parameters from a stochastic CoDa mortality model
+Plot fitted parameters and fitted values of a CoDa mortality model. 
+Two types of plots are available: \code{"coef"} to obtain representations of the 
+three estimated series of parameters and \code{"data"} for visualising the input 
+and fitted values.
+}
+\details{
+When \code{"plotType = coef"} the figure is produced using the basic 
+plot R function \code{\link[graphics]{plot}}.
+
+When \code{"plotType = data"} the figure is produced using function 
+\code{\link[graphics]{matplot}}.
+
+This is important to know in order to use the \code{"..."} argument adequately.
 }
 \examples{
 # Fit model
 M <- coda(CoDa.data, x = 0:110, y = 1960:2014)
 
 # Plot fitted parameters
-plot(M)
-plot(M, type = "p", pch = 19)
+plot(M, plotType = "coef")
+plot(M, plotType = "coef", type = "p", pch = 19)
+
+# Plot input data and fitted values
+plot(M, plotType = "data")
 }

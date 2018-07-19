@@ -14,7 +14,21 @@ coda(dx, x = NULL, y = NULL)
 \item{y}{Vector of input years (optional). Used to label the output objects and plots.}
 }
 \value{
-An object of class \code{coda}
+The output is an object of class \code{"coda"} with the components:
+
+\item{input}{List with arguments provided in input. Saved for convenience.}
+
+\item{coefficients}{Estimated coefficients.}
+
+\item{fitted}{Fitted values of the estimated CoDa model.}
+
+\item{residuals}{Deviance residuals.}
+
+\item{x}{Vector of ages used in the fitting.}
+
+\item{y}{Vector of years used in the fitting.}
+
+\item{call}{The unevaluated expression of the defined coda function.}
 }
 \description{
 Fit Compositional Data (CoDa) model for forecasting the life table 

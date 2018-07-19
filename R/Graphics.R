@@ -1,38 +1,71 @@
 
 
-#' Plot fitted parameters from a stochastic CoDa mortality model
+#' Plot fitted parameters and fitted values of a CoDa mortality model
+#' @description Plot fitted parameters and fitted values of a CoDa mortality model. 
+#' Two types of plots are available: \code{"coef"} to obtain representations of the 
+#' three estimated series of parameters and \code{"data"} for visualising the input 
+#' and fitted values.
+#' @details 
+#' When \code{"plotType = coef"} the figure is produced using the basic 
+#' plot R function \code{\link[graphics]{plot}}.
+#' 
+#' When \code{"plotType = data"} the figure is produced using function 
+#' \code{\link[graphics]{matplot}}.
+#' 
+#' This is important to know in order to use the \code{"..."} argument adequately.
 #' @param x An object of class \code{"coda"} with the fitted 
 #' parameters of the mortality model.
-#' @param type Type of plot to be drawn. See \code{\link[graphics]{plot}}.
-#' @param ... Additional arguments to control graphical appearance.
+#' @param plotType The type of the plot. The alternatives are 
+#' \code{"coef"}(default) and \code{"data"}.
+#' @inheritParams graphics::plot.default
 #' @examples 
 #' # Fit model
 #' M <- coda(CoDa.data, x = 0:110, y = 1960:2014)
 #' 
 #' # Plot fitted parameters
-#' plot(M)
-#' plot(M, type = "p", pch = 19)
+#' plot(M, plotType = "coef")
+#' plot(M, plotType = "coef", type = "p", pch = 19)
+#' 
+#' # Plot input data and fitted values
+#' plot(M, plotType = "data")
 #' @export
 #' 
-plot.coda <- function(x, type = "l", ...){
-  
+plot.coda <- function(x, plotType = c("coef", "data"), 
+                      type = "l", ylim = NULL, ylab = "", ...){
   oldpar <- par(no.readonly = TRUE)
   age    <- x$x
   year   <- x$y
   C      <- coef(x)
+  plotType  <- match.arg(plotType)
   
-  par(mfrow = c(1, 3))
-  plot(age, C$ax, type = type, xlab = "age", ...)
-  plot(age, C$bx, type = type, xlab = "age", ...)
-  plot(year, C$kt, type = type, xlab = "year", ...)
-  
+  plot_coef <- function(){
+    par(mfrow = c(1, 3))
+    plot(age, C$ax, type = type, main = "ax", xlab = "age", ylab = ylab, ...)
+    plot(age, C$bx, type = type, main = "bx", xlab = "age", ylab = ylab, ...)
+    plot(year, C$kt, type = type, main = "kt", xlab = "year", ylab = ylab, ...)
+  }
+  plot_data <- function(){
+    fdx  <- fitted(x)
+    idx  <- x$input$dx
+    if (is.null(ylim)) ylim <- range(idx, fdx)
+    par(mfrow = c(1, 2))
+    matplot(idx, type = type, ylim = ylim, main = "Input data", 
+            xlab = "age", ylab = ylab,
+            col = terrain.colors(ncol(idx), alpha = 1), ...)
+    matplot(fdx, type = type, ylim = ylim, main = "Fitted values", 
+            xlab = "age", ylab = ylab,
+            col = terrain.colors(ncol(idx), alpha = 1), ...)
+  }
+  switch(plotType,
+         coef = plot_coef(),
+         data = plot_data())
   par(oldpar)
 }
 
 
 #' Plot the residuals of a CoDa Mortality Model
 #' 
-#' Plots the deviance residuals of a CoDa Mortality Model which are 
+#' Plot the deviance residuals of a CoDa Mortality Model which are 
 #' of class \code{"residuals.coda"}. Three types of plots
 #' are available: scatter plot of residuals by age, period and cohort,
 #' colour map (heatmap) of the residuals, and a black and white signplot 
@@ -40,37 +73,37 @@ plot.coda <- function(x, type = "l", ...){
 #' 
 #' @param x An object of class \code{residuals.coda} with the residuals of a 
 #' CoDa Mortality Model.
-#' @param type The type of the plot. The alternatives are 
+#' @param plotType The type of the plot. The alternatives are 
 #' \code{"scatter"}(default), \code{"colourmap"}, and \code{"signplot"}.
 #' @param reslim Optional numeric vector of length 2, giving the range of the 
 #' residuals.
 #' @param plotAge Logical value indicating if the age scatter plot should be 
-#' produced. This is only used when \code{type = "scatter"}.
+#' produced. This is only used when \code{plotType = "scatter"}.
 #' @param plotYear Logical value indicating if the calendar year scatter plot 
-#' should be produced. This is only used when \code{type = "scatter"}.
+#' should be produced. This is only used when \code{plotType = "scatter"}.
 #' @param plotCohort Logical value indicating if the cohort scatter plot 
-#' should be produced. This is only used when \code{type = "scatter"}.
+#' should be produced. This is only used when \code{plotType = "scatter"}.
 #' @param pch Optional symbol to use for the points in a scatterplot. 
-#' This is only used when \code{type = "scatter"}. See 
+#' This is only used when \code{plotType = "scatter"}. See 
 #' \code{\link[graphics]{plot}}.
 #' @param col Optional colours to use in plotting. If 
-#' \code{type = "scatter"} this is a single colour to use in the points
-#' in the scatter plots, while if \code{type = "colourmap"} this should
+#' \code{plotType = "scatter"} this is a single colour to use in the points
+#' in the scatter plots, while if \code{plotType = "colourmap"} this should
 #' be a list of colours (see help in \code{\link[fields]{image.plot}} 
-#' for details). This argument is ignored if \code{type = "signplot"}.
+#' for details). This argument is ignored if \code{plotType = "signplot"}.
 #' @param ... Other plotting parameters to be passed to the plotting 
 #' functions. This can be used to control the appearance of the plots.
 #'
 #' @details
-#' When \code{type = "scatter"} scatter plots of the residuals against age, 
+#' When \code{plotType = "scatter"} scatter plots of the residuals against age, 
 #' calendar year and cohort (year of birth) are produced. 
 #'
-#' When \code{type = "colourmap"} a two dimensional colour map of the 
+#' When \code{plotType = "colourmap"} a two dimensional colour map of the 
 #' residuals is plotted. This is produced using function 
 #' \code{\link[fields]{image.plot}}. See \code{\link[fields]{image.plot}} 
 #' for further parameters that can be passed to this type of plots.
 #'
-#' When \code{type = "signplot"} a two dimensional black and white map of the
+#' When \code{plotType = "signplot"} a two dimensional black and white map of the
 #'  residuals is plotted with dark grey representing negative residuals and 
 #'  light grey representing positive residuals. This is produced using 
 #'  function \code{\link[graphics]{image.default}}. 
@@ -81,9 +114,9 @@ plot.coda <- function(x, type = "l", ...){
 #' 
 #' # Plot residuals
 #' res <- resid(M)
-#' plot(res, type = "scatter")
-#' plot(res, type = "colourmap")
-#' plot(res, type = "signplot")
+#' plot(res, plotType = "scatter")
+#' plot(res, plotType = "colourmap")
+#' plot(res, plotType = "signplot")
 #' 
 #' @source 
 #' The code for producing the residual plots is inspired from the one published 
@@ -94,40 +127,38 @@ plot.coda <- function(x, type = "l", ...){
 #' and Vladimir Kaishev.
 #' @export 
 #' 
-plot.residuals.coda <- function(x, type = c("scatter", "colourmap", "signplot"), 
+plot.residuals.coda <- function(x, plotType = c("scatter", "colourmap", "signplot"), 
                                 reslim = NULL, plotAge = TRUE, plotYear = TRUE, 
                                 plotCohort  = TRUE, pch = 20, col = NULL, ...) {
   ages  <- as.numeric(rownames(x))
   years <- as.numeric(colnames(x))
   L     <- dim(x)
   res   <- as.data.frame(x[1:L[1], 1:L[2]])
-  type  <- match.arg(type)
-  oldpar <- par(no.readonly = TRUE)
+  plotType  <- match.arg(plotType)
   
   if (is.null(reslim)) {
     maxRes <- max(abs(res), na.rm = TRUE)
     reslim <- c(-maxRes, maxRes)
   }
-  if (is.null(col) & type == "colourmap") {
+  if (is.null(col) & plotType == "colourmap") {
     col <- colorRampPalette(RColorBrewer::brewer.pal(10, "RdBu"))(64)
   }
-  if (is.null(col) & type == "scatter") {
+  if (is.null(col) & plotType == "scatter") {
     col <- "black"
   }
   
-  switch(type, 
+  oldpar <- par(no.readonly = TRUE)
+  switch(plotType, 
          scatter = scatterplotAPC(res, ages, years, 
                                   plotAge = plotAge, plotYear = plotYear, 
                                   plotCohort = plotCohort, pch = pch, 
-                                  ylab = "residuals", ylim = reslim, 
-                                  col = col, ...),
-         colourmap = fields::image.plot(years, ages, t(res), 
-                                        zlim = reslim, ylab = "age", 
-                                        xlab = "calendar year", col = col, 
-                                        ...),
-         signplot = image.default(years, ages, t(res), 
-                                  zlim = reslim, ylab = "age", 
-                                  xlab = "calendar year", 
+                                  ylab = "residuals", ylim = reslim, col = col, 
+                                  ...),
+         colourmap = fields::image.plot(years, ages, t(res), zlim = reslim, 
+                                        ylab = "age", xlab = "calendar year", 
+                                        col = col, ...),
+         signplot = image.default(years, ages, t(res), zlim = reslim, 
+                                  ylab = "age", xlab = "calendar year", 
                                   breaks = c(-10e10, 0, 10e10), 
                                   col = grey.colors(2), ...)
   )
@@ -189,4 +220,5 @@ scatterplotAPC <- function(mat, ages, years, plotAge = TRUE, plotYear = TRUE,
     if (zeroLine) 
       abline(h = 0)    
   }   
-}
+  }
+

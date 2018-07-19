@@ -57,10 +57,12 @@ for (i in 1:2) testCodaPred(get(paste0("P", i)))
 
 test_that("Test that plots are produced",{
   expect_false(is.null(plot(M1)))
+  expect_false(is.null(plot(M1, plotType = "coef")))
+  expect_false(is.null(plot(M1, plotType = "data")))
   expect_false(is.null(plot(resid(M1))))
-  expect_false(is.null(plot(resid(M1), type = "scatter")))
-  expect_false(is.null(plot(resid(M1), type = "colourmap")))
-  expect_false(is.null(plot(resid(M1), type = "signplot")))
+  expect_false(is.null(plot(resid(M1), plotType = "scatter")))
+  expect_false(is.null(plot(resid(M1), plotType = "colourmap")))
+  expect_false(is.null(plot(resid(M1), plotType = "signplot")))
 })
 
 
