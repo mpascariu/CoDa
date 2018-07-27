@@ -28,15 +28,25 @@
 #' @return \item{x}{Vector of ages used in prediction.} 
 #' @return \item{y}{Vector of years used in prediction.} 
 #' @examples 
+#' # Example 1 ----------------------
 #' # Fit CoDa Mortality Model
 #' M <- coda(CoDa.data)
 #' 
 #' # Predict life expectancy 20 years in the future using CoDa model
 #' P <- predict(M, h = 20)
 #' 
+#' # Example 2 ----------------------
 #' # One can specify manually the ARIMA order, a drift to be included or not 
 #' # and the jump choice of the first forecast year.
 #' P2 <- predict(M, h = 20, order = c(0,1,0), include.drift = TRUE, jumpchoice = "fit")
+#' 
+#' \dontrun{
+#' # Example 3 ----------------------
+#' # Compute life tables using forecast values using the MortalityLaws R package
+#' library(MortalityLaws)
+#' dx <- P$predicted.values$mean
+#' lt <- LifeTable(x = P$x, dx = dx)
+#' }
 #' @export
 #' 
 predict.coda <- function(object, h, order = NULL,
