@@ -1,15 +1,26 @@
 
 
+#' onAttach
+#' @param lib lib
+#' @param pkg pkg
+#' @name onAttach
+#' @keywords internal
+".onAttach" <- function(lib, pkg){
+  packageStartupMessage("\nCoDa  : Compositional Data Mortality Model *** Last Update: July 27, 2018",
+                        "\nAuthor: Pascariu M.D. & Oeppen J.\n")
+}
+
+
 #' Imports
 #' @importFrom stats coef fitted
 #' @importFrom compositions acomp geometricmeanCol clr clrInv
 #' @importFrom forecast forecast Arima arimaorder auto.arima
+#' @importFrom tidyr gather
 #' @importFrom utils head tail
 #' @importFrom graphics par plot matplot abline image.default
 #' @importFrom grDevices colorRampPalette grey.colors terrain.colors
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom fields image.plot
-#' @importFrom reshape2 melt
 #' @name foo_imports
 #' @keywords internal
 NULL
@@ -29,3 +40,5 @@ NULL
 #' @source \href{http://www.mortality.org}{Human Mortality Database}
 #' @seealso \code{\link{coda}}
 "CoDa.data"
+
+

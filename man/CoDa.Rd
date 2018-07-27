@@ -53,8 +53,9 @@ P <- predict(M, h = 20)
 \href{http://doi.org/10.4054/DemRes.2017.37.17}{
 Coherent forecasts of mortality with compositional data analysis.}
 Demographic Research, Volume 17, Article 17, Pages 527--566.}
-\item{Oeppen, J. 2008. Coherent forecasting of multiple-decrement life tables: 
-A test using Japanese cause of death data. Paper presented at the 
+\item{Oeppen, J. 2008. \href{https://dugi-doc.udg.edu/handle/10256/742}{
+Coherent forecasting of multiple-decrement life tables: 
+A test using Japanese cause of death data.} Paper presented at the 
 European Population Conference 2008, Barcelona, Spain, July 9-12, 2008.}
 \item{Aitchison, J. 1986. 
 \href{http://www.leg.ufpr.br/lib/exe/fetch.php/pessoais:abtmartins:a_concise_guide_to_compositional_data_analysis.pdf}{

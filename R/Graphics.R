@@ -184,41 +184,33 @@ plot.residuals.coda <- function(x, plotType = c("scatter", "colourmap", "signplo
 #' 
 scatterplotAPC <- function(mat, ages, years, plotAge = TRUE, plotYear = TRUE, 
                            plotCohort  = TRUE, zeroLine  = TRUE, ...) {
-  nAges <- length(ages)
+  nAges  <- length(ages)
   nYears <- length(years)  
-  cohorts <- (years[1] - ages[nAges]):(years[nYears] - ages[1])
-  nCohorts <- length(cohorts)
-  
-  mat <- as.matrix(mat)
-  if ( nrow(mat) != nAges ||  ncol(mat) != nYears) {
-    stop( "Mismatch between the dimensions of the plottin data and the 
-          number of years or ages")
+  if (nrow(mat) != nAges ||  ncol(mat) != nYears) {
+    stop(paste("Mismatch between the dimensions of the plot in data and the",
+               "number of years or ages"), call. = FALSE)
   }
-  rownames(mat) <- ages
-  colnames(mat) <- years
-  data <- (reshape2::melt(mat, value.name = "y", varnames = c("x", "t")))
-  x    <- NULL #hack to remove note in CRAN check
-  data <- transform(data, c = t - x) 
+  dimnames(mat) <- list(ages, years)
+  x = y = t <- NULL # hack to remove note in CRAN check
+  mat    <- cbind(x = ages, mat)
+  data   <- tidyr::gather(mat, key = t, value = y, -x)
+  data$t <- as.numeric(data$t)
+  data   <- transform(data, c = t - x) 
+  N      <- plotAge + plotYear + plotCohort
   
-  N <- plotAge + plotYear + plotCohort
   if (N > 0) par(mfrow = c(1, N))
   
   if (plotAge) {
     plot(data$x, data$y, type = "p", xlab = "age", ...)
-    if (zeroLine) 
-      abline(h = 0)
+    if (zeroLine) abline(h = 0) 
   }
   if (plotYear) {
     plot(data$t, data$y, type = "p", xlab = "calendar year", ...)
-    if (zeroLine) 
-      abline(h = 0)
+    if (zeroLine) abline(h = 0) 
   }
-  
-  #cohort 
   if (plotCohort) {
     plot(data$c, data$y, type = "p", xlab = "year of birth", ...)
-    if (zeroLine) 
-      abline(h = 0)    
-  }   
+    if (zeroLine) abline(h = 0) 
   }
+}
 

@@ -1,7 +1,7 @@
 Package: CoDa
 Type: Package
 Title: Compositional Data Mortality Model (CoDa)
-Version: 0.9.1
+Version: 0.9.2
 Authors@R: c(
   person("Marius D.", "Pascariu", role = c("aut", "cre"), 
          email = "rpascariu@outlook.com"),
@@ -21,7 +21,7 @@ Depends: R (>= 3.4.0)
 Imports:
   compositions (>= 1.40-2),
   forecast (>= 8.4),
-  reshape2 (>= 1.4.1),
+  tidyr (>= 0.8.1), 
   fields (>= 8.2), 
   RColorBrewer (>= 1.1-2)
 Suggests:
