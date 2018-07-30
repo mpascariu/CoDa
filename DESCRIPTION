@@ -1,13 +1,12 @@
 Package: CoDa
 Type: Package
 Title: Compositional Data Mortality Model (CoDa)
-Version: 0.9.3
+Version: 0.9.4
 Authors@R: c(
   person("Marius D.", "Pascariu", role = c("aut", "cre"), 
          email = "rpascariu@outlook.com"),
-  person("Marie-Pier", "Bergeron-Boucher", role = "ctb"),
-  person("Jim", "Oeppen", role = "ctb"))
-Maintainer: Marius D. Pascariu <rpascariu@outlook.com>
+  person("Jim", "Oeppen", role = "aut"),
+  person("Marie-Pier", "Bergeron-Boucher", role = "ctb"))
 Description: Implementation of the Compositional Data Mortality Model (CoDa). 
   This is a Lee-Carter (1992) <doi:10.2307/2290201> type method that can be used 
   to modelling and forecasting the life table distribution of deaths (dx) using 

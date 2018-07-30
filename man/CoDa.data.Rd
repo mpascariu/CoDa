@@ -6,7 +6,7 @@
 \title{DATA in the package - for testing purposes}
 \format{An object of class \code{matrix} with 111 rows and 55 columns.}
 \source{
-\href{http://www.mortality.org}{Human Mortality Database}
+\href{https://www.mortality.org}{Human Mortality Database}
 }
 \usage{
 CoDa.data
@@ -18,7 +18,7 @@ The data is provided in the package for testing purposes only.
 By the time you are using it, it may be outdated. Download actual 
 demographic data free of charge from Human Mortality Database. 
 Once a username and a password is created on the 
-\href{http://www.mortality.org}{website} the 
+\href{https://www.mortality.org}{website} the 
 \href{https://CRAN.R-project.org/package=MortalityLaws}{MortalityLaws} 
 R package can be used to extract data directly into your R console.
 }

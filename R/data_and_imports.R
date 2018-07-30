@@ -6,8 +6,9 @@
 #' @name onAttach
 #' @keywords internal
 ".onAttach" <- function(lib, pkg){
-  packageStartupMessage("\nCoDa  : Compositional Data Mortality Model *** Last Update: July 27, 2018",
-                        "\nAuthor: Pascariu M.D. & Oeppen J.\n")
+  packageStartupMessage("\nCoDa       : Compositional Data Lee-Carter Mortality Model",
+                        "\nAuthors    : Pascariu M.D. & Oeppen J.",
+                        "\nLast Update: July 30, 2018\n")
 }
 
 
@@ -34,10 +35,10 @@ NULL
 #' By the time you are using it, it may be outdated. Download actual 
 #' demographic data free of charge from Human Mortality Database. 
 #' Once a username and a password is created on the 
-#' \href{http://www.mortality.org}{website} the 
+#' \href{https://www.mortality.org}{website} the 
 #' \href{https://CRAN.R-project.org/package=MortalityLaws}{MortalityLaws} 
 #' R package can be used to extract data directly into your R console.
-#' @source \href{http://www.mortality.org}{Human Mortality Database}
+#' @source \href{https://www.mortality.org}{Human Mortality Database}
 #' @seealso \code{\link{coda}}
 "CoDa.data"
 
