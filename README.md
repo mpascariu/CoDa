@@ -19,7 +19,8 @@ the model, analysing it's goodness-of-fit and performing mortality projections.
 2. Run the following code in your R console 
 
 ```R
-install.packages("CoDa")
+# The package is not on CRAN yet. For now install from GitHub (see below). 
+# install.packages("CoDa")
 ```
 
 ## Updating to the latest version of the package
@@ -49,7 +50,7 @@ you can just type ```?coda``` to see the help file.
 
 Bergeron-Boucher, M-P., Canudas-Romo, V., Oeppen, J. and Vaupel, W.J. 2017. [Coherent forecasts of mortality with compositional data analysis.](http://doi.org/10.4054/DemRes.2017.37.17) Demographic Research, Volume 17, Article 17, Pages 527--566.
 
-Oeppen, J. 2008. Coherent forecasting of multiple-decrement life tables: A test using Japanese cause of death data. Paper presented at the European Population Conference 2008, Barcelona, Spain, July 9-12, 2008.
+Oeppen, J. 2008. [Coherent forecasting of multiple-decrement life tables: A test using Japanese cause of death data.](https://dugi-doc.udg.edu/handle/10256/742) Paper presented at the European Population Conference 2008, Barcelona, Spain, July 9-12, 2008.
 
 Aitchison, J. 1986. [The Statistical Analysis of Compositional Data.](http://www.leg.ufpr.br/lib/exe/fetch.php/pessoais:abtmartins:a_concise_guide_to_compositional_data_analysis.pdf) London: Chapman and Hall. 2015.
 
