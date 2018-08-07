@@ -54,8 +54,8 @@ coda <- function(dx, x = NULL, y = NULL){
   x <- x %||% 1:nrow(dx)
   y <- y %||% 1:ncol(dx)
   
-  vsn <- 1e-20       # very small number
-  dx[dx == 0] <- vsn # replace zero's with a vsn
+  vsn <- sum(dx)/ncol(dx) * 1e-05 # very small number
+  dx[dx == 0] <- vsn              # replace zero's with a vsn
   
   close.dx  <- unclass(acomp(t(dx)))      # data close
   ax        <- geometricmeanCol(close.dx) # geometric mean
