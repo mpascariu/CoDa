@@ -63,11 +63,10 @@ predict.coda <- function(object, h, order = NULL,
   
   # forecast kt; ax and bx are time independent.
   ts_auto = auto.arima(kt)
-  if (is.null(order)) order = arimaorder(ts_auto)
-  if (is.null(include.drift)) include.drift = any(names(coef(ts_auto)) %in% "drift")
   
-  tsm <- Arima(y = kt, order = order, include.drift = include.drift, 
-               method = method, ...)
+  AO  <- order %||% arimaorder(ts_auto)
+  ID  <- include.drift %||% any(names(coef(ts_auto)) %in% "drift")
+  tsm <- Arima(y = kt, order = AO, include.drift = ID, method = method, ...)
   tsf <- forecast(tsm, h = h, level = ci)  # time series forecast
   fkt <- data.frame(tsf$mean, tsf$lower, tsf$upper) # forecast kt
   fdx <- compute_dx(dx = dx, kt = fkt, ax = cf$ax, bx = cf$bx, # forecast dx
