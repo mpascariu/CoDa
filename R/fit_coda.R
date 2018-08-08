@@ -8,7 +8,7 @@
 #' life table death distribution (dx). See Bergeron-Boucher et al. (2017) for a 
 #' detail description and mathematical formulation.
 #' 
-#' @param dx Matrix containing mortality data (dx) with ages as row and time as column.
+#' @param data Matrix containing mortality data (dx) with ages as row and time as column.
 #' @param x Vector of input ages (optional). Used to label the output objects and plots. 
 #' @param y Vector of input years (optional). Used to label the output objects and plots. 
 #' @return The output is an object of class \code{"coda"} with the components:
@@ -49,16 +49,16 @@
 #' 
 #' @export
 #' 
-coda <- function(dx, x = NULL, y = NULL){
+coda <- function(data, x = NULL, y = NULL){
   input <- c(as.list(environment()))
   coda.input.check(input)
-  x <- x %||% 1:nrow(dx)
-  y <- y %||% 1:ncol(dx)
+  x <- x %||% 1:nrow(data)
+  y <- y %||% 1:ncol(data)
   
-  vsn <- sum(dx)/ncol(dx) * 1e-05 # very small number
-  dx[dx == 0] <- vsn              # replace zero's with a vsn
+  vsn <- sum(data)/ncol(data) * 1e-05 # very small number
+  data[data == 0] <- vsn              # replace zero's with a vsn
   
-  close.dx  <- unclass(acomp(t(dx)))      # data close
+  close.dx  <- unclass(acomp(t(data)))      # data close
   ax        <- geometricmeanCol(close.dx) # geometric mean
   close.ax  <- ax/sum(ax)
   dxc       <- sweep(close.dx, 2, close.ax, "/") # centering
@@ -79,8 +79,8 @@ coda <- function(dx, x = NULL, y = NULL){
   BK.proj.fit  <- unclass(clrInv(clr.proj.fit)) # Inv clr
   proj.fit     <- sweep(BK.proj.fit, 2, close.ax, FUN = "*") # add geometric mean
   fit          <- t(proj.fit/rowSums(proj.fit))
-  resid        <- dx - fit
-  dimnames(fit) = dimnames(resid) = dimnames(dx) <- list(x, y)
+  resid        <- data - fit
+  dimnames(fit) = dimnames(resid) = dimnames(data) <- list(x, y)
   
   out <- list(input = input, call = match.call(), fitted.values = fit, 
               coefficients = cf, residuals = resid, x = x, y = y)
@@ -97,18 +97,18 @@ coda <- function(dx, x = NULL, y = NULL){
 coda.input.check <- function(X) {
   # Validate the other arguments
   with(X, {
-    if (any(dx < 0)) {
-      stop("'dx' contains negative values. ",
+    if (any(data < 0)) {
+      stop("'data' contains negative values. ",
            "The compositions must always be positive or equal to zero.", 
            call. = F)
     }
-    if (any(is.na(dx))) {
-      stop("'dx' contains NA values. ",
+    if (any(is.na(data))) {
+      stop("'data' contains NA values. ",
            "coda() doesen't know how to deal with these yet.", 
            call. = F)
     }
-    if (any(is.na(dx))) {
-      stop("'x' contains NA values", call. = F)
+    if (any(is.na(data))) {
+      stop("'data' contains NA values", call. = F)
     }
     if (any(is.na(y))) {
       stop("'y' contains NA values", call. = F)
@@ -116,11 +116,11 @@ coda.input.check <- function(X) {
     if (any(is.na(x))) {
       stop("'x' contains NA values", call. = F)
     }
-    if ((!is.null(x)) & dim(dx)[1] != length(x)) {
-      stop("The length of 'x' is not equal to the number or rows in 'dx'.", call. = F)
+    if ((!is.null(x)) & dim(data)[1] != length(x)) {
+      stop("The length of 'x' is not equal to the number or rows in 'data'.", call. = F)
     }
-    if ((!is.null(y)) & dim(dx)[2] != length(y)) {
-      stop("The length of 'y' is not equal to the number or columns in 'dx'.", call. = F)
+    if ((!is.null(y)) & dim(data)[2] != length(y)) {
+      stop("The length of 'y' is not equal to the number or columns in 'data'.", call. = F)
     }
   })
 }

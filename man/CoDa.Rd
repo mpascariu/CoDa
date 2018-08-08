@@ -4,10 +4,10 @@
 \alias{coda}
 \title{Fit CoDa Mortality Model}
 \usage{
-coda(dx, x = NULL, y = NULL)
+coda(data, x = NULL, y = NULL)
 }
 \arguments{
-\item{dx}{Matrix containing mortality data (dx) with ages as row and time as column.}
+\item{data}{Matrix containing mortality data (dx) with ages as row and time as column.}
 
 \item{x}{Vector of input ages (optional). Used to label the output objects and plots.}
 

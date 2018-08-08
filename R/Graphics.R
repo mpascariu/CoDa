@@ -46,7 +46,7 @@ plot.coda <- function(x, plotType = c("coef", "data"),
   }
   plot_data <- function(){
     fdx  <- fitted(x)
-    idx  <- x$input$dx
+    idx  <- x$input$data
     if (is.null(ylim)) ylim <- range(idx, fdx)
     par(mfrow = c(1, 2))
     matplot(idx, type = type, ylim = ylim, main = "Input data", 

@@ -7,8 +7,6 @@
 compute_dx(dx, kt, ax, bx, fit, y, jumpchoice)
 }
 \arguments{
-\item{dx}{Matrix containing mortality data (dx) with ages as row and time as column.}
-
 \item{kt}{Estimated kt vector of parameters}
 
 \item{ax}{Estimated ax vector of parameters}

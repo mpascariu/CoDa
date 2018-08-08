@@ -66,7 +66,7 @@ CoDa.data[1:5, 1:5]
 `CoDa.data` is containing distribution of deaths for US female population between 1960 and 2014. The data is provided in the package for testing purposes only. By the time you are using it, it may be outdated. Download actual demographic data free of charge from Human Mortality Database. Once a username and a password is created on the [website](http://www.mortality.org) the [MortalityLaws](https://github.com/mpascariu/MortalityLaws) R package can be used to extract data directly into your R console.
 
 ```{r, message=FALSE}
-M <- coda(dx = CoDa.data, x = 0:110, y = 1960:2014)
+M <- coda(data = CoDa.data, x = 0:110, y = 1960:2014)
 M
 ```
 

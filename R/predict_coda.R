@@ -56,7 +56,7 @@ predict.coda <- function(object, h, order = NULL,
                          include.drift = NULL,
                          method = "ML", ci = c(80, 95), 
                          jumpchoice = c("actual", "fit"), ...){
-  dx  <- t(object$input$dx)
+  dx  <- t(object$input$data)
   bop <- max(object$y) + 1
   eop <- bop + h - 1
   fcy <- bop:eop

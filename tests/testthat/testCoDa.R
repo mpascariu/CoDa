@@ -18,9 +18,9 @@ testCodaFit <- function(M){
     expect_false(all(is.infinite(fitted(M))))
     expect_false(all(is.na(coef(M))))
     expect_false(all(is.na(resid(M))))
-    expect_equal(nrow(M$input$dx), length(M$x))
-    expect_equal(ncol(M$input$dx), length(M$y))
-    expect_identical(dim(fitted(M)), dim(resid(M)), dim(M$input$dx))
+    expect_equal(nrow(M$input$data), length(M$x))
+    expect_equal(ncol(M$input$data), length(M$y))
+    expect_identical(dim(fitted(M)), dim(resid(M)), dim(M$input$data))
   })
 }
 
