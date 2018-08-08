@@ -31,18 +31,23 @@ and \code{"CSS"}.}
 Possibilities: \code{"actual"} (use actual rates from final year) 
 and \code{"fit"} (use fitted rates).}
 
-\item{...}{Additional arguments to be passed to \code{\link{Arima}}}
+\item{...}{Additional arguments to be passed to \code{\link[forecast]{Arima}}}
 }
 \value{
 The output is an object of class \code{"predict.coda"} with the components:
 
-\item{kt}{The extrapolated kt parameters.}
+\item{call}{An unevaluated function call, that is, an unevaluated 
+expression which consists of the named function applied to the given arguments.}
 
 \item{predicted.values}{A list containing the predicted values together
 with the associated prediction intervals given by the estimated \code{link{coda}} 
 model over the forecast horizon \code{h}.}
 
-\item{ts.model}{An object of class \code{ARIMA} that contains all the
+\item{kt}{The extrapolated kt parameters.}
+
+\item{conf.intervals}{The extrapolated kt parameters.}
+
+\item{deep}{An object of class \code{ARIMA} that contains all the
 components of the fitted time series model used in \code{kt} prediction.}
 
 \item{x}{Vector of ages used in prediction.}

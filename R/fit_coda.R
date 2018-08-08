@@ -13,12 +13,13 @@
 #' @param y Vector of input years (optional). Used to label the output objects and plots. 
 #' @return The output is an object of class \code{"coda"} with the components:
 #' @return \item{input}{List with arguments provided in input. Saved for convenience.}
+#' @return \item{call}{An unevaluated function call, that is, an unevaluated 
+#' expression which consists of the named function applied to the given arguments.}
 #' @return \item{coefficients}{Estimated coefficients.}
-#' @return \item{fitted}{Fitted values of the estimated CoDa model.}
+#' @return \item{fitted.values}{Fitted values of the estimated CoDa model.}
 #' @return \item{residuals}{Deviance residuals.} 
 #' @return \item{x}{Vector of ages used in the fitting.} 
 #' @return \item{y}{Vector of years used in the fitting.} 
-#' @return \item{call}{The unevaluated expression of the defined coda function.}
 #' @seealso \code{\link{predict.coda}}
 #' @references 
 #' \enumerate{
@@ -81,10 +82,9 @@ coda <- function(dx, x = NULL, y = NULL){
   resid        <- dx - fit
   dimnames(fit) = dimnames(resid) = dimnames(dx) <- list(x, y)
   
-  out <- list(fitted = fit, coefficients = cf, residuals = resid, 
-              input = input, x = x, y = y)
+  out <- list(input = input, call = match.call(), fitted.values = fit, 
+              coefficients = cf, residuals = resid, x = x, y = y)
   out <- structure(class = 'coda', out)
-  out$call <- match.call()
   return(out)
 }
 
@@ -144,11 +144,11 @@ residuals.coda <- function(object, ...){
 #' @export
 #' 
 print.coda <- function(x, ...) {
-  cat('\nCompositional Data Mortality Model fit - CoDa (Oeppen 2008)')
-  cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]')
-  cat('\nCall: '); print(x$call)
-  cat('Ages  in fit: ', paste(range(x$x), collapse = ' - '))
-  cat('\nYears in fit: ', paste(range(x$y), collapse = ' - '))
+  cat('\nFit  : Compositional-Data Lee-Carter Mortality Model')
+  cat('\nModel: clr d[x] = a[x] + b[x]k[t]')
+  cat('\nCall : '); print(x$call)
+  cat('\nAges  in fit:', paste(range(x$x), collapse = ' - '))
+  cat('\nYears in fit:', paste(range(x$y), collapse = ' - '))
   cat('\n')
 }
 
@@ -177,8 +177,8 @@ summary.coda <- function(object, ...) {
 #' @export
 #' 
 print.summary.coda <- function(x, ...){
-  cat('\nCompositional Data Model fit - CoDa (Oeppen 2008)')
-  cat('\nModel with predictor: clr d[x] = a[x] + b[x]k[t]\n')
+  cat('\nFit  : Compositional-Data Lee-Carter Mortality Model')
+  cat('\nModel: clr d[x] = a[x] + b[x]k[t]')
   cat('\nCoefficients:\n')
   A <- head_tail(x$A, digits = 5, hlength = 6, tlength = 6)
   K <- head_tail(data.frame(. = '|', y = as.integer(x$y), kt = x$K),

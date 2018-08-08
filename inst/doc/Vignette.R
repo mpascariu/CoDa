@@ -36,5 +36,5 @@ P
 ls(P)
 
 # Predicted distribution of death
-head(P$predicted.values$mean, 3)
+head(P$predicted.values, 3)
 

@@ -75,12 +75,12 @@ M
 The output is an object of class `coda` with the components:
 
 * `input` -- List with arguments provided in input. Saved for convenience;
+* `call` -- The unevaluated expression of the defined coda function.
 * `coefficients` -- Estimated coefficients;
 * `fitted` -- Fitted values of the estimated CoDa model;
 * `residuals` -- Deviance residuals;
 * `x`	-- Vector of ages used in the fitting;
 * `y`	-- Vector of years used in the fitting;
-* `call` -- The unevaluated expression of the defined coda function.
 
 ```{r}
 ls(M)
@@ -130,7 +130,7 @@ P
 ls(P)
 
 # Predicted distribution of death
-head(P$predicted.values$mean, 3)
+head(P$predicted.values, 3)
 ```
 
 

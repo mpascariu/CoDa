@@ -162,6 +162,8 @@ plot.residuals.coda <- function(x, plotType = c("scatter", "colourmap", "signplo
                                   breaks = c(-10e10, 0, 10e10), 
                                   col = grey.colors(2), ...)
   )
+  message(paste('Different types of plots can be obtained by using,\nplotType: ', 
+                paste(c("scatter", "colourmap", "signplot"), collapse = ", ")))
   par(oldpar)
 }
 

@@ -14,16 +14,19 @@
 #'  conditional-sum-of-squares (\code{"CSS-ML"}), maximum likelihood (\code{"ML"}) 
 #'  and \code{"CSS"}.
 #' @param ci Confidence level for prediction intervals.
-#' @param ... Additional arguments to be passed to \code{\link{Arima}}
+#' @param ... Additional arguments to be passed to \code{\link[forecast]{Arima}}
 #' @param jumpchoice Method used for computation of jumpchoice. 
 #'  Possibilities: \code{"actual"} (use actual rates from final year) 
 #'  and \code{"fit"} (use fitted rates).
 #' @return The output is an object of class \code{"predict.coda"} with the components:
-#' @return \item{kt}{The extrapolated kt parameters.}
+#' @return \item{call}{An unevaluated function call, that is, an unevaluated 
+#' expression which consists of the named function applied to the given arguments.}
 #' @return \item{predicted.values}{A list containing the predicted values together
 #' with the associated prediction intervals given by the estimated \code{link{coda}} 
 #' model over the forecast horizon \code{h}.}
-#' @return \item{ts.model}{An object of class \code{ARIMA} that contains all the
+#' @return \item{kt}{The extrapolated kt parameters.}
+#' @return \item{conf.intervals}{The extrapolated kt parameters.}
+#' @return \item{deep}{An object of class \code{ARIMA} that contains all the
 #' components of the fitted time series model used in \code{kt} prediction.} 
 #' @return \item{x}{Vector of ages used in prediction.} 
 #' @return \item{y}{Vector of years used in prediction.} 
@@ -66,13 +69,22 @@ predict.coda <- function(object, h, order = NULL,
   
   AO  <- order %||% arimaorder(ts_auto)
   ID  <- include.drift %||% any(names(coef(ts_auto)) %in% "drift")
-  tsm <- Arima(y = kt, order = AO, include.drift = ID, method = method, ...)
+  tsm <- forecast::Arima(y = kt, order = AO, include.drift = ID, method = method, ...)
   tsf <- forecast(tsm, h = h, level = ci)  # time series forecast
+  
   fkt <- data.frame(tsf$mean, tsf$lower, tsf$upper) # forecast kt
+  Cnames <- c('mean', paste0('L', ci), paste0('U', ci))
+  colnames(fkt) <- Cnames
+  
   fdx <- compute_dx(dx = dx, kt = fkt, ax = cf$ax, bx = cf$bx, # forecast dx
                     fit = t(fitted(object)), y = fcy, jumpchoice = jc)
-  colnames(fkt) = names(fdx) <- c('mean', paste0('L', ci), paste0('U', ci))
-  out <- list(predicted.values = fdx, y = fcy, x = object$x ,kt = fkt, ts.model = tsm)
+  pv <- fdx[[1]]
+  CI <- fdx[-1]
+  names(CI) <- Cnames[-1]
+  
+  out <- list(call = match.call(), predicted.values = pv, 
+              kt = fkt, conf.intervals = CI,
+              deep = tsm, x = object$x, y = fcy)
   out <- structure(class = 'predict.coda', out)
   return(out)
 }
@@ -122,12 +134,15 @@ compute_dx <- function(dx, kt, ax, bx, fit, y, jumpchoice) {
 #' @export
 #' 
 print.predict.coda <- function(x, ...) {
-  cat('\nCompositional Data Mortality Model forecast')
-  cat('\nTime series model (kt):', arima.string1(x$ts.model, padding = TRUE))
-  cat('\nAges  in forecast: ', paste(range(x$x), collapse = ' - '))
-  cat('\nYears in forecast: ', paste(range(x$y), collapse = ' - '))
+  cat('\nForecast: Compositional-Data Lee-Carter Mortality Model')
+  cat('\nModel   : clr d[x] = a[x] + b[x]k[t]')
+  cat('\nCall    : '); print(x$call)
+  cat('\nkt TS method     :', arima.string1(x$deep, padding = TRUE))
+  cat('\nAges  in forecast:', paste(range(x$x), collapse = ' - '))
+  cat('\nYears in forecast:', paste(range(x$y), collapse = ' - '))
   cat('\n')
 }
+
 
 #' Identify ARIMA model - internal function
 #' @param object An object generate by Arima function
