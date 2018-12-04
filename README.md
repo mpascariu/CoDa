@@ -1,8 +1,17 @@
 # Compositional Data Mortality Model (CoDa) - R Package
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-deprecated-pink.svg)]()
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/mpascariu/CoDa?branch=master&svg=true)](https://ci.appveyor.com/project/mpascariu/CoDa)
 [![Linux Build Status](https://travis-ci.org/mpascariu/CoDa.svg?branch=master)](https://travis-ci.org/mpascariu/CoDa)
 [![codecov](https://codecov.io/github/mpascariu/CoDa/branch/master/graphs/badge.svg)](https://codecov.io/github/mpascariu/CoDa)
 [![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/mpascariu/CoDa/blob/master/LICENSE)
+
+
+## This package has retired
+The `CoDa` package has been deprecated and is no longer under development. Its
+functionalities and improved methods have been included into the
+ [`MortalityForecast`](https://github.com/mpascariu/MortalityForecast)
+package.
 
 ## Description
 
@@ -12,33 +21,6 @@ forecasting the life table distribution of deaths (dx) using Principal Component
 Analysis. In the context of mortality forecasting the CoDa method was fist used 
 in Bergeron-Boucher et al. (2017). The package includes functions for fitting 
 the model, analysing it's goodness-of-fit and performing mortality projections.
-
-## Installation
-
-1. Make sure you have the most recent version of R
-2. Run the following code in your R console 
-
-```R
-# The package is not on CRAN yet. For now install from GitHub (see below). 
-# install.packages("CoDa")
-```
-
-## Updating to the latest version of the package
-
-You can track and contribute to the development of `CoDa` on [GitHub](https://github.com/mpascariu/MortalityLaws). To install it:
-
-1. Install the release version of `devtools` from CRAN with `install.packages("devtools")`.
-
-2. Make sure you have a working development environment.
-    * **Windows**: Install [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/).
-    * **Mac**: Install `Xcode` from the Mac App Store.
-    * **Linux**: Install a compiler and various development libraries (details vary across different flavors of Linux).
-
-3. Install the development version of `CoDa`.
-
-   ```R
-   devtools::install_github("mpascariu/CoDa")
-   ```
 
 ## Help
 All functions are documented in the standard way, which means that 

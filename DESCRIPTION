@@ -31,6 +31,5 @@ Suggests:
   testthat
 URL: https://github.com/mpascariu/CoDa
 BugReports: https://github.com/mpascariu/CoDa/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
-
